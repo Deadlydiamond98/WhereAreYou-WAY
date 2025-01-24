@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "archeryexp",
+    "id": "koalalib",
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${description}",
@@ -12,16 +12,16 @@
         "sources": "https://github.com/FabricMC/fabric-example-mod"
     },
     "license": "${license}",
-    "icon": "assets/archeryexp/archeryexp.png",
+    "icon": "assets/koalalib/choco.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-          "org.infernalstudios.archeryexp.ArcheryExpansionFabric"
+          "net.deadlydiamond98.koalalib.KoalaLibFabric"
         ]
     },
     "mixins": [
-        "archeryexp.mixins.json",
-        "archeryexp.fabric.mixins.json"
+        "koalalib.mixins.json",
+        "koalalib.fabric.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=0.14",
