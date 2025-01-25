@@ -1,10 +1,11 @@
-package net.deadlydiamond98.koalalib.util.registries.services;
+package net.deadlydiamond98.koalalib.util.registry_tools.services;
 
 import net.deadlydiamond98.koalalib.KoalaLib;
 
 import java.util.ServiceLoader;
 
 public class Services {
+
     public static final KoalaPlatformHelper PLATFORM = load(KoalaPlatformHelper.class);
 
     public static <T> T load(Class<T> clazz) {

@@ -16,8 +16,6 @@ public class TestBlockEntity extends BlockEntity {
 
 
     public static <T extends BlockEntity> void tick(Level level, BlockPos pos, BlockState state, T t) {
-        level.players().forEach(player -> {
-            player.sendSystemMessage(Component.literal("HELLO"));
-        });
+        level.players().forEach(player -> player.sendSystemMessage(Component.literal("HELLO")));
     }
 }

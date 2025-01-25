@@ -1,7 +1,8 @@
 package net.deadlydiamond98.koalalib.platform;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import net.deadlydiamond98.koalalib.util.registries.services.KoalaPlatformHelper;
+import net.deadlydiamond98.koalalib.KoalaLib;
+import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaPlatformHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -11,8 +12,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.DeferredRegister;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -20,6 +23,7 @@ import java.util.function.Supplier;
 public class ForgePlatformHelper implements KoalaPlatformHelper {
 
     private static final Map<ResourceKey<?>, DeferredRegister> DEFERRED_REGISTERIES = new Reference2ObjectOpenHashMap<>();
+
 
     @Override
     public <T> Supplier<T> register(Registry<? super T> reg, ResourceLocation id, Supplier<T> obj) {
@@ -33,8 +37,23 @@ public class ForgePlatformHelper implements KoalaPlatformHelper {
                 -> factory.create(blockPos, blockState), blocks.get()).build(null));
     }
 
-    public static void register(IEventBus eventBus) {
+
+    private static @Nullable IEventBus eventBus = null;
+
+    public void pushRegistries() {
+        eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    }
+
+    @Override
+    public void popRegistries() {
+
+        if (eventBus == null) {
+            throw new IllegalStateException("Tried to call MultiModRegistries.pop() without first calling MultiModRegistries.push()");
+        }
+
         DEFERRED_REGISTERIES.values().forEach(deferredRegister -> deferredRegister.register(eventBus));
+        DEFERRED_REGISTERIES.clear();
+        eventBus = null;
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

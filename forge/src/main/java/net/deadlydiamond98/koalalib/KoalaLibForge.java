@@ -10,14 +10,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class KoalaLibForge {
 
     public KoalaLibForge() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
         KoalaLib.init();
-        ForgePlatformHelper.register(modEventBus);
-
-        modEventBus.addListener(this::commonSetup);
-    }
-
-    public void commonSetup(FMLCommonSetupEvent event) {
     }
 }

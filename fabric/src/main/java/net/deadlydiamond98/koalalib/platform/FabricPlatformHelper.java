@@ -1,6 +1,7 @@
 package net.deadlydiamond98.koalalib.platform;
 
-import net.deadlydiamond98.koalalib.util.registries.services.KoalaPlatformHelper;
+import net.deadlydiamond98.koalalib.KoalaLib;
+import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaPlatformHelper;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
@@ -26,6 +27,12 @@ public class FabricPlatformHelper implements KoalaPlatformHelper {
                 (pos, state) -> factory.create(pos, state), blocks.get()
         ).build(null));
     }
+
+    @Override
+    public void pushRegistries() {}
+
+    @Override
+    public void popRegistries() {}
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

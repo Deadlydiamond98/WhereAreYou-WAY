@@ -1,6 +1,6 @@
 package net.deadlydiamond98.koalalib.testing;
 
-import net.deadlydiamond98.koalalib.util.registries.MultiModRegistries;
+import net.deadlydiamond98.koalalib.util.registry_tools.MultiModRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.deadlydiamond98.koalalib.KoalaLib;

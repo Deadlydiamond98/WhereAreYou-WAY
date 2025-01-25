@@ -17,6 +17,9 @@
     "entrypoints": {
         "main": [
           "net.deadlydiamond98.koalalib.KoalaLibFabric"
+        ],
+        "client": [
+            "net.deadlydiamond98.koalalib.events.KoalaClientRegistryFabric"
         ]
     },
     "mixins": [

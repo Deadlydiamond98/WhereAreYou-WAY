@@ -1,7 +1,7 @@
-package net.deadlydiamond98.koalalib.util.registries;
+package net.deadlydiamond98.koalalib.util.registry_tools;
 
-import net.deadlydiamond98.koalalib.util.registries.services.KoalaPlatformHelper;
-import net.deadlydiamond98.koalalib.util.registries.services.Services;
+import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaPlatformHelper;
+import net.deadlydiamond98.koalalib.util.registry_tools.services.Services;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -61,7 +61,7 @@ public class MultiModRegistries {
     }
 
     /**
-     * Default Registraion Method, runs on both Fabric and Forge
+     * Default registration Method, runs on both Fabric and Forge
      * @param reg Where the object will be registered
      * @param id The Identifier for the block
      * @param obj The supplier
@@ -69,5 +69,22 @@ public class MultiModRegistries {
      */
     public static <T> Supplier<T> register(Registry<? super T> reg, ResourceLocation id, Supplier<T> obj) {
         return Services.PLATFORM.register(reg, id, obj);
+    }
+
+
+    /**
+     * Make sure call this before registering your mod items, blocks, entities, etc...
+     * Without running this, forge will refuse to work!!!!!
+     */
+    public static void push() {
+        Services.PLATFORM.pushRegistries();
+    }
+
+    /**
+     * Make sure you run this once you're finished registering your mod items, blocks, entities, etc...
+     * Without running this, forge will refuse to work!!!!!
+     */
+    public static void pop() {
+        Services.PLATFORM.popRegistries();
     }
 }

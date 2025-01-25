@@ -25,7 +25,7 @@ public class TestingBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState $$0) {
-        return RenderShape.INVISIBLE;
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Nullable
