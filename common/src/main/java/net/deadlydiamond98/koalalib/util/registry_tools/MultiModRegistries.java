@@ -6,13 +6,15 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import java.util.Arrays;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class MultiModRegistries {
 
@@ -25,6 +27,7 @@ public class MultiModRegistries {
     public static <T extends Item> Supplier<T> registerItem(ResourceLocation id, Supplier<T> item) {
         return register(BuiltInRegistries.ITEM, id, item);
     }
+
 
     /**
      * Registers a block with an item
@@ -48,16 +51,16 @@ public class MultiModRegistries {
         return register(BuiltInRegistries.BLOCK, id, blockNoItem);
     }
 
-    /**
-     * Registers a block entity type
-     * @param id The Identifier for the block entity
-     * @param factory The instance of the block entity
-     * @param blocks All the blocks that the block entity is associated with
-     * @return
-     */
+
+    @SafeVarargs
+    public static Supplier<CreativeModeTab> registerCreativeTab(ResourceLocation id, Supplier<ItemStack> icon, String translation, Supplier<Item>... items) {
+        return Services.PLATFORM.registerCreativeTab(id, icon, translation, () -> Stream.of(items).map(Supplier::get).toArray(Item[]::new));
+    }
+
+    @SafeVarargs
     public static <T extends BlockEntity> Supplier<BlockEntityType<T>> registerBlockEntityType(
             ResourceLocation id, KoalaPlatformHelper.BlockEntityFactory<T> factory, Supplier<Block>... blocks) {
-        return Services.PLATFORM.registerBlockEntity(id, factory, () -> Arrays.stream(blocks).map(Supplier::get).toArray(Block[]::new));
+        return Services.PLATFORM.registerBlockEntity(id, factory, () -> Stream.of(blocks).map(Supplier::get).toArray(Block[]::new));
     }
 
     /**

@@ -19,7 +19,7 @@
           "net.deadlydiamond98.koalalib.KoalaLibFabric"
         ],
         "client": [
-            "net.deadlydiamond98.koalalib.events.KoalaClientRegistryFabric"
+          "net.deadlydiamond98.koalalib.events.KoalaClientEventsFabric"
         ]
     },
     "mixins": [

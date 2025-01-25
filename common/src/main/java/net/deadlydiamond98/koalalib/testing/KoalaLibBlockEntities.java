@@ -6,6 +6,7 @@ import net.deadlydiamond98.koalalib.testing.objs.TestBlockEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
 public class KoalaLibBlockEntities {

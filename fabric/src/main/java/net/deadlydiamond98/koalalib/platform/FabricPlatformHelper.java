@@ -1,12 +1,18 @@
 package net.deadlydiamond98.koalalib.platform;
 
 import net.deadlydiamond98.koalalib.KoalaLib;
+import net.deadlydiamond98.koalalib.events.KoalaCommonEventsFabric;
 import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaPlatformHelper;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -29,10 +35,22 @@ public class FabricPlatformHelper implements KoalaPlatformHelper {
     }
 
     @Override
+    public Supplier<CreativeModeTab> registerCreativeTab(ResourceLocation id, Supplier<ItemStack> icon, String translation, Supplier<Item[]> items) {
+        return register(BuiltInRegistries.CREATIVE_MODE_TAB, id, () -> FabricItemGroup.builder().icon(icon)
+                .title(Component.translatable(translation)).displayItems((itemDisplayParameters, output) -> {
+                    for (Item item : items.get()) {
+                        output.accept(item);
+                    }
+                }).build());
+    }
+
+    @Override
     public void pushRegistries() {}
 
     @Override
-    public void popRegistries() {}
+    public void popRegistries() {
+        KoalaCommonEventsFabric.addCreativeTabItems();
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
