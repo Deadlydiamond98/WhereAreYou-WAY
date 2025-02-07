@@ -1,0 +1,39 @@
+{
+  "back": {
+    "sounds": [
+      "koalalib:console/back"
+    ]
+  },
+  "craft": {
+    "sounds": [
+      "koalalib:console/craft"
+    ]
+  },
+  "craftfail": {
+    "sounds": [
+      "koalalib:console/craftfail"
+    ]
+  },
+  "focus": {
+    "sounds": [
+      "koalalib:console/focus"
+    ]
+  },
+  "press": {
+    "sounds": [
+      "koalalib:console/press"
+    ]
+  },
+  "scroll": {
+    "sounds": [
+      "koalalib:console/scroll"
+    ]
+  },
+
+
+  "bagel": {
+    "sounds": [
+      "koalalib:joke/bagel"
+    ]
+  }
+}

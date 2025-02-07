@@ -12,9 +12,8 @@ import java.util.function.Supplier;
 
 public class KoalaLibCreativeTabs {
     public static final Supplier<CreativeModeTab> TEST_TAB = MultiModRegistries.registerCreativeTab(new ResourceLocation(KoalaLib.MOD_ID, "test_tab"),
-            () -> Blocks.AMETHYST_BLOCK.asItem().getDefaultInstance(), "test.test.test");
+            () -> Blocks.AMETHYST_BLOCK.asItem().getDefaultInstance(), "test.test.test", () -> Items.AMETHYST_BLOCK);
 
     public static void register() {
-
     }
 }

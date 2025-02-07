@@ -5,6 +5,7 @@ import net.deadlydiamond98.koalalib.util.registry_tools.services.Services;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -62,6 +63,11 @@ public class MultiModRegistries {
             ResourceLocation id, KoalaPlatformHelper.BlockEntityFactory<T> factory, Supplier<Block>... blocks) {
         return Services.PLATFORM.registerBlockEntity(id, factory, () -> Stream.of(blocks).map(Supplier::get).toArray(Block[]::new));
     }
+
+    public static <T extends SoundEvent> Supplier<T> registerSound(ResourceLocation id, Supplier<T> item) {
+        return register(BuiltInRegistries.SOUND_EVENT, id, item);
+    }
+
 
     /**
      * Default registration Method, runs on both Fabric and Forge

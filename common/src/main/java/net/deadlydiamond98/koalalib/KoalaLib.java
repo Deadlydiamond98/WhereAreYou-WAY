@@ -1,9 +1,10 @@
 package net.deadlydiamond98.koalalib;
 
+import net.deadlydiamond98.koalalib.content.KoalaLibSounds;
 import net.deadlydiamond98.koalalib.testing.KoalaLibBlockEntities;
 import net.deadlydiamond98.koalalib.testing.KoalaLibBlocks;
 import net.deadlydiamond98.koalalib.testing.KoalaLibCreativeTabs;
-import net.deadlydiamond98.koalalib.testing.KoalaLibItems;
+import net.deadlydiamond98.koalalib.testing.KoalaLibTesttingItems;
 import net.deadlydiamond98.koalalib.testing.objs.TestBlockEntityRenderer;
 import net.deadlydiamond98.koalalib.util.registry_tools.MultiModClientRegistries;
 import net.deadlydiamond98.koalalib.util.registry_tools.MultiModRegistries;
@@ -21,7 +22,9 @@ public class KoalaLib {
 
         MultiModRegistries.push();
 
-        KoalaLibItems.register();
+        KoalaLibSounds.register();
+
+        KoalaLibTesttingItems.register();
         KoalaLibBlocks.register();
         KoalaLibBlockEntities.register();
         KoalaLibCreativeTabs.register();

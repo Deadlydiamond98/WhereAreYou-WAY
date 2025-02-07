@@ -6,7 +6,7 @@ import net.minecraft.world.item.Item;
 import net.deadlydiamond98.koalalib.KoalaLib;
 import java.util.function.Supplier;
 
-public class KoalaLibItems {
+public class KoalaLibTesttingItems {
 
     public static final Supplier<Item> TEST = MultiModRegistries.registerItem(new ResourceLocation(KoalaLib.MOD_ID, "test"),
             () -> new Item(new Item.Properties()));
