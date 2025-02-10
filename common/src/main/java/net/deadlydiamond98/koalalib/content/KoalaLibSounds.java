@@ -8,6 +8,11 @@ import net.minecraft.world.item.Item;
 
 import java.util.function.Supplier;
 
+/**
+ * This Class consists purely of sounds that I'll be reusing in my projects at least more than once, or sounds that I
+ * feel are useful enough to warrant being here, such as the legacy console gui sounds.
+ */
+
 public class KoalaLibSounds {
 
     // LEGACY CONSOLE SOUNDS

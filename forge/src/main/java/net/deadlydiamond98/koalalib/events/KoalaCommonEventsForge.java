@@ -1,6 +1,5 @@
 package net.deadlydiamond98.koalalib.events;
 
-import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaRegistryMaps;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 
 public class KoalaCommonEventsForge {

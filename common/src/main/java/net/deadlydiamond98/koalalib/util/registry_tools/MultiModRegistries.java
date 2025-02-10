@@ -1,6 +1,8 @@
 package net.deadlydiamond98.koalalib.util.registry_tools;
 
+import net.deadlydiamond98.koalalib.items.interfaces.ModelPredicates;
 import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaPlatformHelper;
+import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaRegistrationLists;
 import net.deadlydiamond98.koalalib.util.registry_tools.services.Services;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
