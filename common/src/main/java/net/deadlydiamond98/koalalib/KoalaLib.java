@@ -35,18 +35,17 @@ public class KoalaLib {
 
         MultiModRegistries.pop();
 
+        LOGGER.info("Finished Loading " + MOD_NAME);
+    }
+
+    public static void initClient() {
         MultiModClientRegistries.registerBlockRenderLayer(KoalaLibBlocks.TEST, RenderType.cutout());
         MultiModClientRegistries.registerBlockEntityRenderer(KoalaLibBlockEntities.TEST_B_ENTITY, TestBlockEntityRenderer::new);
-
-        KoalaBlockConversions.addBlockToStrippables(Blocks.ANDESITE, Blocks.POLISHED_ANDESITE);
-        KoalaBlockConversions.addBlockToWaxables(Blocks.DIAMOND_BLOCK, Blocks.IRON_BLOCK);
 
         KoalaClientTickEvents.END_CLIENT_TICK.register(world -> {
             if (world.player != null) {
                 world.player.sendSystemMessage(Component.literal("Test"));
             }
         });
-
-        LOGGER.info("Finished Loading " + MOD_NAME);
     }
 }

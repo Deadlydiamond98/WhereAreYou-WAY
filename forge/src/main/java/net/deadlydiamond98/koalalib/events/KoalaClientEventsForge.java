@@ -1,5 +1,6 @@
 package net.deadlydiamond98.koalalib.events;
 
+import net.deadlydiamond98.koalalib.KoalaLib;
 import net.deadlydiamond98.koalalib.common.events.events.KoalaClientTickEvents;
 import net.deadlydiamond98.koalalib.core.KoalaRegistrationLists;
 import net.minecraft.client.Minecraft;
@@ -13,6 +14,8 @@ public class KoalaClientEventsForge {
 
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            KoalaLib.initClient();
+
             // Block Render Layers
             KoalaRegistrationLists.registerAndEmpty(KoalaRegistrationLists.BLOCK_RENDER_LAYERS, (block, regtype) -> ItemBlockRenderTypes.setRenderLayer(block.get(), regtype));
 //            // Item Model Predicates
