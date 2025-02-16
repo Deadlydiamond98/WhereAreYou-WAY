@@ -1,8 +1,8 @@
 package net.deadlydiamond98.koalalib.core.mixin;
 
-import net.deadlydiamond98.koalalib.api.items.properties.Glowing;
-import net.deadlydiamond98.koalalib.api.items.properties.NoGravity;
-import net.deadlydiamond98.koalalib.api.items.properties.PickupSound;
+import net.deadlydiamond98.koalalib.common.items.properties.Glowing;
+import net.deadlydiamond98.koalalib.common.items.properties.NoGravity;
+import net.deadlydiamond98.koalalib.common.items.properties.PickupSound;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;

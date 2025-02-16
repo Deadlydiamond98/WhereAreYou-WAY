@@ -1,6 +1,6 @@
 package net.deadlydiamond98.koalalib.testing.objs;
 
-import net.deadlydiamond98.koalalib.api.content.KoalaLibSounds;
+import net.deadlydiamond98.koalalib.common.content.KoalaLibSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

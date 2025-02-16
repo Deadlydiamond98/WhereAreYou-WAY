@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -73,8 +74,8 @@ public class ForgePlatformHelper implements KoalaPlatformHelper {
         eventBus.addListener(KoalaClientEventsForge::registerRenderLayers);
         eventBus.addListener(KoalaCommonEventsForge::addCreativeTabItems);
 
-
-//        MinecraftForge.EVENT_BUS.addListener();
+        MinecraftForge.EVENT_BUS.addListener(KoalaClientEventsForge::onClientTick);
+        MinecraftForge.EVENT_BUS.addListener(KoalaCommonEventsForge::onWorldTick);
 
         eventBus = null;
     }

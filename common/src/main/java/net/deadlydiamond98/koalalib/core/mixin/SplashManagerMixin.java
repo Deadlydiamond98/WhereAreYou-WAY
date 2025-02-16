@@ -1,6 +1,6 @@
 package net.deadlydiamond98.koalalib.core.mixin;
 
-import net.deadlydiamond98.koalalib.api.util.CustomSplashTexts;
+import net.deadlydiamond98.koalalib.common.util.CustomSplashTexts;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;

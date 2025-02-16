@@ -1,7 +1,7 @@
 package net.deadlydiamond98.koalalib.testing;
 
 import net.deadlydiamond98.koalalib.KoalaLib;
-import net.deadlydiamond98.koalalib.api.registration.MultiModBlockRegistries;
+import net.deadlydiamond98.koalalib.common.registration.MultiModBlockRegistries;
 import net.deadlydiamond98.koalalib.testing.objs.TestingBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;

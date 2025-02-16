@@ -1,9 +1,9 @@
 package net.deadlydiamond98.koalalib.testing.objs;
 
-import net.deadlydiamond98.koalalib.api.content.KoalaLibSounds;
-import net.deadlydiamond98.koalalib.api.items.properties.Glowing;
-import net.deadlydiamond98.koalalib.api.items.properties.NoGravity;
-import net.deadlydiamond98.koalalib.api.items.properties.PickupSound;
+import net.deadlydiamond98.koalalib.common.content.KoalaLibSounds;
+import net.deadlydiamond98.koalalib.common.items.properties.Glowing;
+import net.deadlydiamond98.koalalib.common.items.properties.NoGravity;
+import net.deadlydiamond98.koalalib.common.items.properties.PickupSound;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 

@@ -1,7 +1,7 @@
 package net.deadlydiamond98.koalalib.testing;
 
 import net.deadlydiamond98.koalalib.KoalaLib;
-import net.deadlydiamond98.koalalib.api.registration.MultiModRegistries;
+import net.deadlydiamond98.koalalib.common.registration.MultiModRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Items;
