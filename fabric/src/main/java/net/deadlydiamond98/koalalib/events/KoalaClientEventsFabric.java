@@ -1,13 +1,12 @@
 package net.deadlydiamond98.koalalib.events;
 
-import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaRegistrationLists;
+import net.deadlydiamond98.koalalib.core.services.KoalaRegistrationLists;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.item.ItemProperties;
 
 @Environment(EnvType.CLIENT)
 public class KoalaClientEventsFabric implements ClientModInitializer {

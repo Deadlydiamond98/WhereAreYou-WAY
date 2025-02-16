@@ -3,7 +3,7 @@ package net.deadlydiamond98.koalalib.platform;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.deadlydiamond98.koalalib.events.KoalaClientEventsForge;
 import net.deadlydiamond98.koalalib.events.KoalaCommonEventsForge;
-import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaPlatformHelper;
+import net.deadlydiamond98.koalalib.core.services.KoalaPlatformHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -24,14 +23,13 @@ import net.minecraftforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ForgePlatformHelper implements KoalaPlatformHelper {
 
     private static final Map<ResourceKey<?>, DeferredRegister> DEFERRED_REGISTERIES = new Reference2ObjectOpenHashMap<>();
 
-
+    @SuppressWarnings("unchecked")
     @Override
     public <T> Supplier<T> register(Registry<? super T> reg, ResourceLocation id, Supplier<T> obj) {
         return DEFERRED_REGISTERIES.computeIfAbsent(reg.key(),

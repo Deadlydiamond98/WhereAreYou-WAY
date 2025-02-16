@@ -1,8 +1,7 @@
 package net.deadlydiamond98.koalalib.platform;
 
-import net.deadlydiamond98.koalalib.KoalaLib;
 import net.deadlydiamond98.koalalib.events.KoalaCommonEventsFabric;
-import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaPlatformHelper;
+import net.deadlydiamond98.koalalib.core.services.KoalaPlatformHelper;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.loader.api.FabricLoader;

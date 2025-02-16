@@ -1,8 +1,7 @@
 package net.deadlydiamond98.koalalib.events;
 
-import net.deadlydiamond98.koalalib.util.registry_tools.services.KoalaRegistrationLists;
+import net.deadlydiamond98.koalalib.core.services.KoalaRegistrationLists;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
