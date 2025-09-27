@@ -1,3 +1,5 @@
 {
+  "key.findmyfriendsfix.category": "Find My Friends Keys",
+  "key.findmyfriendsfix.toggle": "Toggle Distance Nameplates",
   "gui.findmyfriendsfix.distance": "Distance: %s"
 }

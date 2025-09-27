@@ -27,6 +27,6 @@ public class FindFriendsKeybindings {
 
     private static KeyMapping register(String toggle, int glfw) {
         String key = "key." + FindFriends.MOD_ID + ".";
-        return new KeyMapping(key + toggle, InputConstants.Type.KEYSYM, glfw, key + ".category");
+        return new KeyMapping(key + toggle, InputConstants.Type.KEYSYM, glfw, key + "category");
     }
 }
