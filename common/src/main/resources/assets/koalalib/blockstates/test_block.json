@@ -1,7 +1,0 @@
-{
-  "variants": {
-    "": {
-      "model": "koalalib:block/test_block"
-    }
-  }
-}

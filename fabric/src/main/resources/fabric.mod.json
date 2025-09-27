@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "koalalib",
+    "id": "findmyfriendsfix",
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${description}",
@@ -12,19 +12,19 @@
         "sources": "https://github.com/FabricMC/fabric-example-mod"
     },
     "license": "${license}",
-    "icon": "assets/koalalib/choco.png",
+    "icon": "assets/findmyfriendsfix/icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-          "net.deadlydiamond98.koalalib.KoalaLibFabric"
+            "net.deadlydiamond98.findmyfriendsfix.FindFriendsFabric"
         ],
         "client": [
-          "net.deadlydiamond98.koalalib.events.KoalaClientEventsFabric"
+          "net.deadlydiamond98.findmyfriendsfix.FindFriendsClientFabric"
         ]
     },
     "mixins": [
-        "koalalib.mixins.json",
-        "koalalib.fabric.mixins.json"
+        "findmyfriendsfix.mixins.json",
+        "findmyfriendsfix.fabric.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=0.14",
