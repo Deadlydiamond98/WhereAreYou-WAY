@@ -4,9 +4,11 @@ import net.deadlydiamond98.way.common.command.WayServerCommands;
 import net.deadlydiamond98.way.common.events.WayTickingEvent;
 import net.deadlydiamond98.way.networking.WayForgeNetworking;
 import net.deadlydiamond98.way.platform.ForgePlatformHelper;
+import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -39,6 +41,11 @@ public class WayForge {
         @SubscribeEvent
         public static void registerCommands(RegisterCommandsEvent event) {
             WayServerCommands.register(event.getDispatcher(), event.getBuildContext(), event.getCommandSelection());
+        }
+
+        @SubscribeEvent
+        public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+            ((IWayPlayer) event.getEntity()).way$updateRenderPreferences();
         }
     }
 }

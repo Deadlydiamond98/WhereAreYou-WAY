@@ -37,6 +37,13 @@ public class WayForgeNetworking {
                 SendClearPlayersS2CPacket::decode,
                 SendClearPlayersS2CPacket::handle
         );
+        CHANNEL.registerMessage(
+                i++,
+                SendUpdateNameplateRenderS2CPacket.class,
+                SendUpdateNameplateRenderS2CPacket::encode,
+                SendUpdateNameplateRenderS2CPacket::decode,
+                SendUpdateNameplateRenderS2CPacket::handle
+        );
     }
 
     public static void sendClearPlayers(ServerPlayer sender) {
@@ -55,9 +62,23 @@ public class WayForgeNetworking {
 
         buf.writeDouble(player.getEyeHeight());
 
+        buf.writeUUID(player.getUUID());
+
         buf.writeBoolean(((IWayPlayer) player).way$showPlayer());
         buf.writeInt(((IWayPlayer) player).way$getColor());
 
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> sender), new SendUpdatePlayerS2CPacket(buf));
+    }
+
+    public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines) {
+        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+
+        buf.writeBoolean(toggle);
+        buf.writeBoolean(names);
+        buf.writeBoolean(distance);
+        buf.writeBoolean(colors);
+        buf.writeBoolean(outlines);
+
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> sender), new SendUpdateNameplateRenderS2CPacket(buf));
     }
 }

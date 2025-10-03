@@ -37,9 +37,11 @@ public abstract class AbstractWayCommand {
     private ArgumentBuilder<CommandSourceStack,?> buildCommandStart() {
         List<ArgumentBuilder<CommandSourceStack,?>> commandParts = new ArrayList<>();
 
-        if (multiTarget()) {
+        if (isOP()) {
             commandParts.add(Commands.literal("admin"));
-            commandParts.add(Commands.argument("players", EntityArgument.players()));
+            if (multiTarget()) {
+                commandParts.add(Commands.argument("players", EntityArgument.players()));
+            }
         }
 
         commandParts.add(Commands.literal(this.type));

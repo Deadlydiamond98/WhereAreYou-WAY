@@ -18,11 +18,14 @@ import net.minecraft.world.entity.player.Player;
 public class WayFabricNetworking {
     public static final ResourceLocation UPDATE_PLAYER_PACKET = new ResourceLocation(Way.MOD_ID, "update_players");
     public static final ResourceLocation CLEAR_PLAYERS_PACKET = new ResourceLocation(Way.MOD_ID, "clear_players");
+    public static final ResourceLocation UPDATE_NAMEPLATE_RENDER_PACKET = new ResourceLocation(Way.MOD_ID, "update_nameplate_render");
+
 
     public static class Client {
         public static void registerS2CPackets() {
             ClientPlayNetworking.registerGlobalReceiver(UPDATE_PLAYER_PACKET, WayFabricNetworking.Client::recievePlayerList);
             ClientPlayNetworking.registerGlobalReceiver(CLEAR_PLAYERS_PACKET, WayFabricNetworking.Client::recieveClearPlayers);
+            ClientPlayNetworking.registerGlobalReceiver(UPDATE_NAMEPLATE_RENDER_PACKET, WayFabricNetworking.Client::recieveNamePlateRender);
         }
 
         private static void recieveClearPlayers(Minecraft minecraft, ClientPacketListener clientPacketListener, FriendlyByteBuf buf, PacketSender packetSender) {
@@ -35,8 +38,21 @@ public class WayFabricNetworking {
                             buf.readComponent(), buf.readFloat(),
                             buf.readDouble(), buf.readDouble(), buf.readDouble(),
                             buf.readDouble(),
+                            buf.readUUID(),
                             buf.readBoolean(), buf.readInt()
             ));
+        }
+
+        private static void recieveNamePlateRender(Minecraft minecraft, ClientPacketListener clientPacketListener, FriendlyByteBuf buf, PacketSender packetSender) {
+            if (minecraft.player != null) {
+                IWayPlayer player = ((IWayPlayer) minecraft.player);
+
+                player.way$setToggle(buf.readBoolean());
+                player.way$setSeeName(buf.readBoolean());
+                player.way$setSeeDist(buf.readBoolean());
+                player.way$setSeeColor(buf.readBoolean());
+                player.way$setSeeOutline(buf.readBoolean());
+            }
         }
     }
 
@@ -57,10 +73,25 @@ public class WayFabricNetworking {
             buf.writeDouble(player.getZ());
             buf.writeDouble(player.getEyeHeight());
 
+            buf.writeUUID(player.getUUID());
+
             buf.writeBoolean(((IWayPlayer) player).way$showPlayer());
             buf.writeInt(((IWayPlayer) player).way$getColor());
 
             ServerPlayNetworking.send(sender, UPDATE_PLAYER_PACKET, buf);
+        }
+
+        public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines) {
+            FriendlyByteBuf buf = PacketByteBufs.create();
+
+            buf.writeBoolean(toggle);
+
+            buf.writeBoolean(names);
+            buf.writeBoolean(distance);
+            buf.writeBoolean(colors);
+            buf.writeBoolean(outlines);
+
+            ServerPlayNetworking.send(sender, UPDATE_NAMEPLATE_RENDER_PACKET, buf);
         }
     }
 }

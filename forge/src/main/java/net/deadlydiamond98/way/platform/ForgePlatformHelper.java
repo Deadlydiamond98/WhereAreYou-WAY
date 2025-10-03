@@ -47,8 +47,13 @@ public class ForgePlatformHelper implements PlatformHelper {
     }
 
     @Override
-    public void sendClearPacket(ServerPlayer sender) {
+    public void sendS2CClearPacket(ServerPlayer sender) {
         WayForgeNetworking.sendClearPlayers(sender);
+    }
+
+    @Override
+    public void sendS2CRenderingPacket(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines) {
+        WayForgeNetworking.sendRenderValues(sender, toggle, names, distance, colors, outlines);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

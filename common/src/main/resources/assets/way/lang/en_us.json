@@ -1,7 +1,7 @@
 {
-  "key.findmyfriendsfix.category": "Find My Friends Keys",
-  "key.findmyfriendsfix.toggle": "Toggle Distance Nameplates",
-  "gui.findmyfriendsfix.distance": "Distance: %s",
+  "key.way.category": "WAY Keys",
+  "key.way.toggle": "Toggle Distance Nameplates",
+  "gui.way.distance": "Distance: %s",
 
   "commands.way.opt": "Successfully set %s's visibility to %s",
   "commands.way.opt.multi": "Successfully set the visibility of %s players to %s",

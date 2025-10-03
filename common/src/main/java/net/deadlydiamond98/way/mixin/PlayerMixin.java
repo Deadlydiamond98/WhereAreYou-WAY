@@ -1,8 +1,10 @@
 package net.deadlydiamond98.way.mixin;
 
+import net.deadlydiamond98.way.platform.Service;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(Player.class)
@@ -18,19 +21,55 @@ public class PlayerMixin implements IWayPlayer {
 
     @Unique private boolean way$showPlayer = true;
     @Unique private int way$color = 0xFFFFFF;
-    @Unique private List<Component> way$players;
-    @Unique @Nullable private Integer way$focusedColor;
+    @Unique private List<Component> way$players = new ArrayList<>();
+    @Unique private Integer way$focusedColor = null;
+
+    @Unique private boolean way$toggle = true;
+
+    @Unique private boolean way$seeNames = true;
+    @Unique private boolean way$seeDist = true;
+    @Unique private boolean way$seeColors = true;
+    @Unique private boolean way$seeOutlines = false;
+    @Unique private boolean way$seeSelf = false;
+
+    @Unique private int way$minRender = 0;
+    @Unique private int way$maxRender = 999999;
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void way$readAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
         this.way$showPlayer = nbt.getBoolean("showPlayerWAY");
         this.way$color = nbt.getInt("colorWAY");
+
+        this.way$toggle = nbt.getBoolean("toggleWay");
+        this.way$seeNames = nbt.getBoolean("seeNameWay");
+        this.way$seeDist = nbt.getBoolean("seeDistWay");
+        this.way$seeColors = nbt.getBoolean("seeColorWay");
+        this.way$seeOutlines = nbt.getBoolean("seeOutlineWay");
+        this.way$seeSelf = nbt.getBoolean("seeSelfWay");
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void way$addAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
         nbt.putBoolean("showPlayerWAY", way$showPlayer);
         nbt.putInt("colorWAY", way$color);
+
+        nbt.putBoolean("toggleWay", way$toggle);
+        nbt.putBoolean("seeNameWay", way$seeNames);
+        nbt.putBoolean("seeDistWay", way$seeDist);
+        nbt.putBoolean("seeColorWay", way$seeColors);
+        nbt.putBoolean("seeOutlineWay", way$seeOutlines);
+        nbt.putBoolean("seeSelfWay", way$seeSelf);
+    }
+
+    @Override
+    public void way$setToggle(boolean bool) {
+        this.way$toggle = bool;
+        way$updateRenderPreferences();
+    }
+
+    @Override
+    public boolean way$getToggle() {
+        return this.way$toggle;
     }
 
     @Override
@@ -45,13 +84,15 @@ public class PlayerMixin implements IWayPlayer {
 
     @Override
     public void way$setColor(int hex) {
-        this.way$color = hex;
+        this.way$color = hex | 0xFF000000;
     }
 
     @Override
     public int way$getColor() {
-        return this.way$color;
+        return this.way$color | 0xFF000000;
     }
+
+    // FOCUS COMMAND METHODS ///////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void way$setFocusedPlayerNames(List<Component> players) {
@@ -65,11 +106,112 @@ public class PlayerMixin implements IWayPlayer {
 
     @Override
     public void way$setFocusedColor(@Nullable Integer color) {
+        if (color != null) {
+            color = color | 0xFF000000;
+        }
         this.way$focusedColor = color;
     }
 
     @Override
     public @Nullable Integer way$getFocusedColor() {
-        return this.way$focusedColor;
+        if (this.way$focusedColor != null) {
+            return this.way$focusedColor | 0xFF000000;
+        }
+        return null;
+    }
+
+
+    // SEE COMMAND METHODS /////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void way$updateRenderPreferences() {
+        Player player = (Player) (Object) this;
+        if (player instanceof ServerPlayer sender) {
+            Service.PLATFORM.sendS2CRenderingPacket(
+                    sender,
+                    this.way$toggle,
+                    this.way$seeNames,
+                    this.way$seeDist,
+                    this.way$seeColors,
+                    this.way$seeOutlines
+            );
+        }
+    }
+
+    @Override
+    public void way$setSeeName(boolean bool) {
+        this.way$seeNames = bool;
+        way$updateRenderPreferences();
+    }
+
+    @Override
+    public boolean way$canSeeName() {
+        return this.way$seeNames;
+    }
+
+    @Override
+    public void way$setSeeDist(boolean bool) {
+        this.way$seeDist = bool;
+        way$updateRenderPreferences();
+    }
+
+    @Override
+    public boolean way$canSeeDist() {
+        return this.way$seeDist;
+    }
+
+    @Override
+    public void way$setSeeColor(boolean bool) {
+        this.way$seeColors = bool;
+        way$updateRenderPreferences();
+    }
+
+    @Override
+    public boolean way$canSeeColor() {
+        return this.way$seeColors;
+    }
+
+    @Override
+    public void way$setSeeOutline(boolean bool) {
+        this.way$seeOutlines = bool;
+        way$updateRenderPreferences();
+    }
+
+    @Override
+    public boolean way$canSeeOutline() {
+        return this.way$seeOutlines;
+    }
+
+    @Override
+    public void way$setSeeSelf(boolean bool) {
+        this.way$seeSelf = bool;
+        way$updateRenderPreferences();
+    }
+
+    @Override
+    public boolean way$canSeeSelf() {
+        return this.way$seeSelf;
+    }
+
+    // Distance Command Methods ////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void way$setMinRender(int min) {
+        this.way$minRender = min;
+    }
+
+    @Override
+    public int way$getMinRender() {
+        return this.way$minRender;
+    }
+
+    @Override
+    public void way$setMaxRender(int max) {
+        this.way$maxRender = max;
+    }
+
+    @Override
+    public int way$getMaxRender() {
+        return this.way$maxRender;
     }
 }

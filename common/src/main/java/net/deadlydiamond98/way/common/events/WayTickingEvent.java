@@ -2,6 +2,8 @@ package net.deadlydiamond98.way.common.events;
 
 import net.deadlydiamond98.way.platform.Service;
 import net.deadlydiamond98.way.util.PlayerLocation;
+import net.deadlydiamond98.way.util.mixin.IWayPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -22,13 +24,37 @@ public class WayTickingEvent {
         });
         level.players().forEach(sender -> {
             if (sender.tickCount % UPDATE_RATE == 0) {
-                Service.PLATFORM.sendClearPacket((ServerPlayer) sender);
+                Service.PLATFORM.sendS2CClearPacket((ServerPlayer) sender);
                 for (Player player : toRender) {
-                    if (sender != player) {
+                    if (canRenderNameplate(sender, player)) {
                         Service.PLATFORM.sendS2CPlayerList((ServerPlayer) sender, player);
                     }
                 }
             }
         });
+    }
+
+    private static boolean canRenderNameplate(Player sender, Player player) {
+        IWayPlayer iWaySender = (IWayPlayer) sender;
+        IWayPlayer iWayPlayer = (IWayPlayer) player;
+
+        List<Component> targets = iWaySender.way$getFocusedPlayerNames();
+        Integer focusColor = iWaySender.way$getFocusedColor();
+
+        double distance = sender.position().distanceTo(player.position());
+        boolean inRange = distance >= iWaySender.way$getMinRender() && distance <= iWaySender.way$getMaxRender();
+
+        if ((sender == player && !iWaySender.way$canSeeSelf()) || !inRange) {
+            return false;
+        }
+
+        if (focusColor != null) {
+            return focusColor == iWayPlayer.way$getColor();
+        }
+        else if (!targets.isEmpty()) {
+            return targets.contains(player.getName());
+        }
+
+        return iWayPlayer.way$showPlayer();
     }
 }

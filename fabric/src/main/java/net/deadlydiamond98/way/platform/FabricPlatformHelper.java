@@ -23,8 +23,13 @@ public class FabricPlatformHelper implements PlatformHelper {
     }
 
     @Override
-    public void sendClearPacket(ServerPlayer sender) {
+    public void sendS2CClearPacket(ServerPlayer sender) {
         WayFabricNetworking.Server.sendClearPlayers(sender);
+    }
+
+    @Override
+    public void sendS2CRenderingPacket(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines) {
+        WayFabricNetworking.Server.sendRenderValues(sender, toggle, names, distance, colors, outlines);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
