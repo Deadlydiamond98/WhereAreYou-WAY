@@ -1,0 +1,27 @@
+{
+  "key.findmyfriendsfix.category": "Find My Friends Keys",
+  "key.findmyfriendsfix.toggle": "Toggle Distance Nameplates",
+  "gui.findmyfriendsfix.distance": "Distance: %s",
+
+  "commands.way.opt": "Successfully set %s's visibility to %s",
+  "commands.way.opt.multi": "Successfully set the visibility of %s players to %s",
+
+  "commands.way.color": "Successfully set %s's color to %s",
+  "commands.way.color.multi": "Successfully set the color of %s players to %s",
+
+  "commands.way.color.reset": "Successfully reset %s's color",
+  "commands.way.color.reset.multi": "Successfully reset the color of %s players",
+
+  "commands.way.focus": "Successfully set %s's targets to %s",
+  "commands.way.focus.multi": "Successfully set the targets of %s players to %s",
+
+  "commands.way.focus.color": "Successfully set %s's target color to %s",
+  "commands.way.focus.color.multi": "Successfully set the target color of %s players to %s",
+
+  "commands.way.focus.reset": "Successfully reset %s's focus targets",
+  "commands.way.focus.reset.multi": "Successfully reset the focus targets of %s players",
+
+  "commands.way.no_player": "Could not execute command, No valid player found!",
+  "way.argument.dye.invalid": "Invalid Color: %s",
+  "way.argument.hex.invalid": "Invalid Hex Color: %s"
+}

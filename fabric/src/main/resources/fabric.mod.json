@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "findmyfriendsfix",
+    "id": "way",
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${description}",
@@ -9,22 +9,22 @@
     ],
     "contact": {
         "homepage": "https://fabricmc.net/",
-        "sources": "https://github.com/FabricMC/fabric-example-mod"
+        "sources": "https://github.com/Deadlydiamond98/WhereAreYou-WAY"
     },
     "license": "${license}",
-    "icon": "assets/findmyfriendsfix/icon.png",
+    "icon": "assets/way/icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-            "net.deadlydiamond98.findmyfriendsfix.FindFriendsFabric"
+            "net.deadlydiamond98.way.WayFabric"
         ],
         "client": [
-          "net.deadlydiamond98.findmyfriendsfix.FindFriendsClientFabric"
+            "net.deadlydiamond98.way.WayClientFabric"
         ]
     },
     "mixins": [
-        "findmyfriendsfix.mixins.json",
-        "findmyfriendsfix.fabric.mixins.json"
+        "way.mixins.json",
+        "way.fabric.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=0.14",

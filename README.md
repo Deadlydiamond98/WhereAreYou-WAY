@@ -1,7 +1,7 @@
-# Find My Friends Fix
+# Where Are You (WAY)
 
-Made due to request by Nekomaster / Infernal Studios
+A small accessibility-based multiplayer utility mod that allows you to easily 
+find the WAY to your friends by highlighting them with a distance tag and 
+an outline when you press the M key.
 
-Rewrites the Mod to be multiloader, and fixes an issue in the original where nameplates would flicker.
-
-I originally tried to make this a client-side only mod, but came to the unfortunate realization that the client world only stores nearby players rather than all players in the world...
+Made due to a request by Nekomaster / Infernal Studios
