@@ -128,16 +128,18 @@ public class WayNameplateRenderer {
         int distHex = viewer.way$canSeeColor() ? data.hex : 0x55FFFF;
         int shadowHex = ColorUtil.blendHexColors(distHex, 0xFF000000, 0.7f);
 
-        renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
-        renderBackplate(poseStack, bufferSource, dist, -2.75f, 0, distScale);
+//        renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
+//        renderBackplate(poseStack, bufferSource, dist, -2.75f, 0, distScale);
 
-        // Back
-        renderText(poseStack, bufferSource, level, dist, 0.03f, 0.03f, z, data.nametagY - 7.5f, distScale, shadowHex);
-        renderText(poseStack, bufferSource, level, data.name, 0.03f, 0.03f, z, data.nametagY, nameScale, shadowHex);
+//        // Back
+//        renderText(poseStack, bufferSource, level, dist, 0.03f, 0.03f, z, data.nametagY - 7.5f, distScale, shadowHex);
+//        renderText(poseStack, bufferSource, level, data.name, 0.03f, 0.03f, z, data.nametagY, nameScale, shadowHex);
+//
+//        // Front
+//        renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY - 7.5f, distScale, distHex);
+//        renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, nameHex);
 
-        // Front
-        renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY - 7.5f, distScale, distHex);
-        renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, nameHex);
+        WayTextRenderer.render(poseStack, bufferSource, data.name, 0, data.nametagY - 10, nameScale);
 
         renderPlayerIcon(poseStack, bufferSource, data.uuid, data.hex, 0.25f, 0.5f);
 
