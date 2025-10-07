@@ -70,7 +70,7 @@ public class WayForgeNetworking {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> sender), new SendUpdatePlayerS2CPacket(buf));
     }
 
-    public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines) {
+    public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean colordistance, boolean namePain) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 
         buf.writeBoolean(toggle);
@@ -78,6 +78,9 @@ public class WayForgeNetworking {
         buf.writeBoolean(distance);
         buf.writeBoolean(colors);
         buf.writeBoolean(outlines);
+
+        buf.writeBoolean(colordistance);
+        buf.writeBoolean(namePain);
 
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> sender), new SendUpdateNameplateRenderS2CPacket(buf));
     }

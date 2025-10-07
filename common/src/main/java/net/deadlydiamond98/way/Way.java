@@ -9,6 +9,9 @@ import java.util.Scanner;
 
 public class Way {
 
+    public static boolean namePain = true;
+    public static boolean colorDistance = false;
+
     public static final String MOD_ID = "way";
     public static final String MOD_NAME = "Where Are You (WAY)";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);

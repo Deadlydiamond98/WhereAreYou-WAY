@@ -40,6 +40,7 @@ public abstract class AbstractWayCommand {
         if (isOP()) {
             commandParts.add(Commands.literal("admin"));
             if (multiTarget()) {
+                commandParts.add(getPrePlayerArg());
                 commandParts.add(Commands.argument("players", EntityArgument.players()));
             }
         }
@@ -52,6 +53,10 @@ public abstract class AbstractWayCommand {
         commandParts.remove(last);
 
         return buildCommand(lastPart, commandParts);
+    }
+
+    protected ArgumentBuilder<CommandSourceStack,?> getPrePlayerArg() {
+        return Commands.literal("modify");
     }
 
     private ArgumentBuilder<CommandSourceStack,?> buildCommand(ArgumentBuilder<CommandSourceStack, ?> command, List<ArgumentBuilder<CommandSourceStack,?>> commandParts) {
@@ -115,18 +120,18 @@ public abstract class AbstractWayCommand {
     private void successMSG(CommandContext<CommandSourceStack> context, Collection<? extends Player> players) {
         boolean bl = players.size() > 1;
         MutableComponent base = Component.translatable(
-                LANG_PREFIX + getID(context) + (bl ? ".multi" : ""),
+                LANG_PREFIX + getID(context, players.iterator().next()) + (bl ? ".multi" : ""),
                 bl ? players.size() : players.iterator().next().getDisplayName(),
                 getNewValue(context)
         );
-        sendSuccess(context, base);
+        sendSuccess(context, base, players.iterator().next());
     }
 
-    protected String getID(CommandContext<CommandSourceStack> context) {
+    protected String getID(CommandContext<CommandSourceStack> context, Player player) {
         return this.type;
     }
 
-    protected void sendSuccess(CommandContext<CommandSourceStack> context, MutableComponent base) {
+    protected void sendSuccess(CommandContext<CommandSourceStack> context, MutableComponent base, Player player) {
         context.getSource().sendSuccess(() -> base, isOP());
     }
 

@@ -2,6 +2,7 @@ package net.deadlydiamond98.way.common.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.deadlydiamond98.way.common.command.commands.*;
+import net.deadlydiamond98.way.common.command.commands.PersistantStateCommand;
 import net.deadlydiamond98.way.common.command.commands.color.ClearColorCommand;
 import net.deadlydiamond98.way.common.command.commands.color.DyeColorCommmand;
 import net.deadlydiamond98.way.common.command.commands.color.HexColorCommand;
@@ -9,6 +10,7 @@ import net.deadlydiamond98.way.common.command.commands.focus.ClearFocusCommand;
 import net.deadlydiamond98.way.common.command.commands.focus.FocusDyeColorCommand;
 import net.deadlydiamond98.way.common.command.commands.focus.FocusHexColorCommand;
 import net.deadlydiamond98.way.common.command.commands.focus.FocusPlayersCommand;
+import net.deadlydiamond98.way.common.world.WaySavedData;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -19,7 +21,6 @@ public class WayServerCommands {
     // REGULAR COMMANDS ////////////////////////////////////////////////////////////////////////////////////////////////
 
     // util
-
     private static final AbstractWayCommand TOGGLE = new ToggleCommand(0);
 
     // opt
@@ -77,6 +78,46 @@ public class WayServerCommands {
     private static final AbstractWayCommand FOCUS_COLOR_HEX_ADMIN = new FocusHexColorCommand(2);
     private static final AbstractWayCommand CLEAR_FOCUS_ADMIN = new ClearFocusCommand(2);
 
+    // see
+    private static final AbstractWayCommand SEE_NAME_ADMIN = new SeeCommand(2, "name",
+            (player, bool) -> ((IWayPlayer) player).way$setSeeName(bool)
+    );
+    private static final AbstractWayCommand SEE_DIST_ADMIN = new SeeCommand(2, "distance",
+            (player, bool) -> ((IWayPlayer) player).way$setSeeDist(bool)
+    );
+    private static final AbstractWayCommand SEE_COLOR_ADMIN = new SeeCommand(2, "color",
+            (player, bool) -> ((IWayPlayer) player).way$setSeeColor(bool)
+    );
+    private static final AbstractWayCommand SEE_OUTLINE_ADMIN = new SeeCommand(2, "outline",
+            (player, bool) -> ((IWayPlayer) player).way$setSeeOutline(bool)
+    );
+    private static final AbstractWayCommand SEE_SELF_ADMIN = new SeeCommand(2, "self",
+            (player, bool) -> ((IWayPlayer) player).way$setSeeSelf(bool)
+    );
+
+
+    // admin exclusive
+    public static final PersistantStateCommand COLOR_DISTANCE = new PersistantStateCommand("colourDistance",
+            WaySavedData::colorDistance, WaySavedData::setColorDistance
+    );
+    public static final PersistantStateCommand NAME_PAIN = new PersistantStateCommand("namePain",
+            WaySavedData::namePain, WaySavedData::setNamePain
+    );
+    public static final PersistantStateCommand FORCE_OPT = new PersistantStateCommand("forceOpt-in",
+            WaySavedData::forceOptIn, WaySavedData::setForceOptIn
+    );
+    public static final PersistantStateCommand LOCK_COLOR = new PersistantStateCommand("lockColour",
+            WaySavedData::lockColor, WaySavedData::setLockColor
+    );
+    public static final PersistantStateCommand SEE_TEAM_ONLY = new PersistantStateCommand("seeTeamColourOnly",
+            WaySavedData::seeTeamColorOnly, WaySavedData::setSeeTeamColorOnly
+    );
+    public static final PersistantStateCommand SEE_ALL = new PersistantStateCommand("seeAll",
+            WaySavedData::seeAll, WaySavedData::setSeeAll
+    );
+    public static final PersistantStateCommand NO_FRIENDLY_FIRE = new PersistantStateCommand("teamColourNoFriendlyFire",
+            WaySavedData::teamColourNoFriendlyFire, WaySavedData::setTeamColourNoFriendlyFire
+    );
 
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {

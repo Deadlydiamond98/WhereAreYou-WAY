@@ -1,5 +1,6 @@
 package net.deadlydiamond98.way.common.events;
 
+import net.deadlydiamond98.way.common.command.WayServerCommands;
 import net.deadlydiamond98.way.platform.Service;
 import net.deadlydiamond98.way.util.PlayerLocation;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
@@ -48,13 +49,21 @@ public class WayTickingEvent {
             return false;
         }
 
-        if (focusColor != null) {
+        if (WayServerCommands.SEE_ALL.getValue(sender)) {
+            return iWayPlayer.way$showPlayer();
+        }
+
+        boolean focus = focusColor != null;
+
+        if (WayServerCommands.SEE_TEAM_ONLY.getValue(sender)) {
+            return focus && focusColor == iWayPlayer.way$getColor();
+        } else if (focus) {
             return focusColor == iWayPlayer.way$getColor();
         }
-        else if (!targets.isEmpty()) {
+        if (!targets.isEmpty()) {
             return targets.contains(player.getName());
         }
 
-        return iWayPlayer.way$showPlayer();
+        return WayServerCommands.FORCE_OPT.getValue(sender) || iWayPlayer.way$showPlayer();
     }
 }

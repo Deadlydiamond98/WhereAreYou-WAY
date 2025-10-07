@@ -12,7 +12,7 @@ public interface PlatformHelper {
 
     <A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>, I extends ArgumentTypeInfo<A, T>> void registerArgType(String id, Class<A> infoClass, I argumentTypeInfo);
 
-    void sendS2CRenderingPacket(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines);
+    void sendS2CRenderingPacket(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean colordistance, boolean namePain);
     void sendS2CPlayerList(ServerPlayer sender, Player player);
     void sendS2CClearPacket(ServerPlayer sender);
 

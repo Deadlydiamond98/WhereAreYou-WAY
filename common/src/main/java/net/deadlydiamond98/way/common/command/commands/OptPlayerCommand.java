@@ -20,7 +20,7 @@ public class OptPlayerCommand extends AbstractWayCommand {
     }
 
     @Override
-    protected String getID(CommandContext<CommandSourceStack> context) {
+    protected String getID(CommandContext<CommandSourceStack> context, Player player) {
         return "opt";
     }
 

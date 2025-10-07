@@ -3,6 +3,7 @@ package net.deadlydiamond98.way.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.deadlydiamond98.way.Way;
 import net.deadlydiamond98.way.common.events.WayTickingEvent;
 import net.deadlydiamond98.way.util.ColorUtil;
 import net.deadlydiamond98.way.util.PlayerLocation;
@@ -11,6 +12,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -25,7 +27,6 @@ import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 public class WayNameplateRenderEvent {
@@ -59,7 +60,13 @@ public class WayNameplateRenderEvent {
                         float distScale = 0.25f * mainScale;
 
                         int nameHex = wayPlayer.way$canSeeColor() ? player.hex : 0xFFFFFF;
+
+                        if (Way.colorDistance) {
+                            nameHex = ColorUtil.blendHexColors(nameHex, 0xFFFFFF, distance / 2000.0f);
+                        }
+
                         int distHex = wayPlayer.way$canSeeColor() ? player.hex : 0x55FFFF;
+                        distHex = wayPlayer.way$canSeeName() ? 0xFFFFFF : distHex;
 
                         if (wayPlayer.way$canSeeName()) {
                             createBackplate(poseStack, bufferSource, name, -10.5f, nameScale);
@@ -71,7 +78,7 @@ public class WayNameplateRenderEvent {
                             renderText(poseStack, bufferSource, level, dist, player.nametagY - 7.5f, distScale, distHex);
                         }
 
-                        createPlayerPlane(poseStack, bufferSource, player.uuid, player.hex, 0.5f, 0.5f);
+                        createPlayerPlane(poseStack, bufferSource, client.player.level().getPlayerByUUID(player.uuid), player.hex, 0.4f, 0.5f);
 
                         poseStack.popPose();
                     }
@@ -95,6 +102,16 @@ public class WayNameplateRenderEvent {
                             float distScale = 0.25f * mainScale;
 
                             int nameHex = wayPlayer.way$canSeeColor() ? playerdata.hex : 0xFFFFFF;
+
+                            if (Way.colorDistance) {
+                                nameHex = ColorUtil.blendHexColors(nameHex, 0xFFFFFF, distance / 2000.0f);
+                            }
+
+                            if (Way.namePain) {
+                                nameHex = ColorUtil.blendHexColors(nameHex, 0xFF0000, player.hurtTime / 10.0f);
+                            }
+                            nameHex = nameHex  | 0xFF000000;
+
                             int distHex = wayPlayer.way$canSeeColor() ? playerdata.hex : 0x55FFFF;
                             distHex = wayPlayer.way$canSeeName() ? 0xFFFFFF : distHex;
 
@@ -108,7 +125,7 @@ public class WayNameplateRenderEvent {
                                 renderText(poseStack, bufferSource, level, dist, player.getNameTagOffsetY() - 7.5f, distScale, distHex);
                             }
 
-                            createPlayerPlane(poseStack, bufferSource, player.getUUID(), playerdata.hex, 0.5f, 0.5f);
+                            createPlayerPlane(poseStack, bufferSource, client.player.level().getPlayerByUUID(playerdata.uuid), playerdata.hex, 0.25f, 0.5f);
 
                             poseStack.popPose();
                         }
@@ -190,7 +207,7 @@ public class WayNameplateRenderEvent {
         poseStack.popPose();
     }
 
-    private static void createPlayerPlane(PoseStack poseStack, MultiBufferSource bufferSource, UUID uuid, int hex, float scale, float y) {
+    private static void createPlayerPlane(PoseStack poseStack, MultiBufferSource bufferSource, Player player, int hex, float scale, float y) {
         Minecraft client = Minecraft.getInstance();
         Camera camera = client.getEntityRenderDispatcher().camera;
 
@@ -203,12 +220,12 @@ public class WayNameplateRenderEvent {
 
         VertexConsumer vertexConsumer = bufferSource.getBuffer(WayRenderTypes.getFullbrightNoDepthShape());
         float offset = 0.1f;
-        int[] ARGB = ColorUtil.HexToARGB(hex);
-        renderFace(poseStack, vertexConsumer, x - offset, x + 1 + offset, y - offset, y + 1 + offset, 0.001f, ARGB[1], ARGB[2], ARGB[3], 255);
+        int[] argb = ColorUtil.HexToARGB(hex);
+        renderFace(poseStack, vertexConsumer, x - offset, x + 1 + offset, y - offset, y + 1 + offset, 0.001f, argb[1], argb[2], argb[3], 255);
 
-        ResourceLocation skin = DefaultPlayerSkin.getDefaultSkin(uuid);
+        ResourceLocation skin = ((AbstractClientPlayer) player).getSkinTextureLocation();
         VertexConsumer vertexConsumer2 = bufferSource.getBuffer(WayRenderTypes.getFullbrightNoDepth(skin));
-        renderFace(poseStack, vertexConsumer, x, x + 1, y, y + 1, 0, 255, 255, 255, 255);
+        renderFace(poseStack, vertexConsumer2, x, x + 1, y, y + 1, 0, 255, 255, 255, 255);
 
         poseStack.popPose();
     }

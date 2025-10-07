@@ -6,7 +6,6 @@ import net.deadlydiamond98.way.common.command.commands.AbstractWayCommand;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
@@ -29,7 +28,7 @@ public class ClearFocusCommand extends AbstractWayCommand {
     }
 
     @Override
-    protected String getID(CommandContext<CommandSourceStack> context) {
+    protected String getID(CommandContext<CommandSourceStack> context, Player player) {
         return "focus.reset";
     }
 

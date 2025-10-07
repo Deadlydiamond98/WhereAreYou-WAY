@@ -3,7 +3,6 @@ package net.deadlydiamond98.way.common.command.commands.focus;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.deadlydiamond98.way.common.command.arguments.DyeColorArgument;
-import net.deadlydiamond98.way.common.command.arguments.HexColorArgument;
 import net.deadlydiamond98.way.common.command.commands.AbstractWayCommand;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.commands.CommandSourceStack;
@@ -39,13 +38,13 @@ public class FocusDyeColorCommand extends AbstractWayCommand {
     }
 
     @Override
-    protected String getID(CommandContext<CommandSourceStack> context) {
-        return super.getID(context) + ".color";
+    protected String getID(CommandContext<CommandSourceStack> context, Player player) {
+        return super.getID(context, player) + ".color";
     }
 
     @Override
-    protected void sendSuccess(CommandContext<CommandSourceStack> context, MutableComponent base) {
+    protected void sendSuccess(CommandContext<CommandSourceStack> context, MutableComponent base, Player player) {
         base.append(Component.literal("■").setStyle(Style.EMPTY.withColor(DyeColorArgument.getColor(context, "color").getTextColor())));
-        super.sendSuccess(context, base);
+        super.sendSuccess(context, base, player);
     }
 }

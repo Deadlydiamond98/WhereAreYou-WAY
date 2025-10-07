@@ -2,8 +2,10 @@ package net.deadlydiamond98.way.common.command.commands.color;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import net.deadlydiamond98.way.common.command.WayServerCommands;
 import net.deadlydiamond98.way.common.command.commands.AbstractWayCommand;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -29,7 +31,9 @@ public abstract class AbstractColorCommand extends AbstractWayCommand {
 
     @Override
     protected void execute(CommandContext<CommandSourceStack> context, Player player) {
-        ((IWayPlayer) player).way$setColor(getColor(context));
+        if (!WayServerCommands.LOCK_COLOR.getValue(player) || this.isOP()) {
+            ((IWayPlayer) player).way$setColor(getColor(context));
+        }
     }
 
     @Override
@@ -43,18 +47,23 @@ public abstract class AbstractColorCommand extends AbstractWayCommand {
     }
 
     @Override
-    protected String getID(CommandContext<CommandSourceStack> context) {
+    protected String getID(CommandContext<CommandSourceStack> context, Player player) {
+        if (WayServerCommands.LOCK_COLOR.getValue(player) && !this.isOP()) {
+            return "color.fail";
+        }
         if (isColor(context)) {
-            return super.getID(context);
+            return super.getID(context, player);
         }
         return "color.reset";
     }
 
     @Override
-    protected void sendSuccess(CommandContext<CommandSourceStack> context, MutableComponent base) {
-        if (isColor(context)) {
+    protected void sendSuccess(CommandContext<CommandSourceStack> context, MutableComponent base, Player player) {
+        boolean locked = WayServerCommands.LOCK_COLOR.getValue(player) && !this.isOP();
+        if (isColor(context) && !locked) {
             base.append(Component.literal("■").setStyle(Style.EMPTY.withColor(getColor(context))));
         }
-        super.sendSuccess(context, base);
+        Style errorColor = !locked ? Style.EMPTY : Style.EMPTY.withColor(ChatFormatting.DARK_RED);
+        super.sendSuccess(context, base.withStyle(errorColor), player);
     }
 }

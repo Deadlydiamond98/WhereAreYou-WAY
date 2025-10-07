@@ -1,10 +1,10 @@
-package net.deadlydiamond98.way.common.command.commands.admin;
+package net.deadlydiamond98.way.common.command.commands;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.deadlydiamond98.way.common.command.commands.AbstractWayCommand;
 import net.deadlydiamond98.way.common.world.WaySavedData;
+import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerLevel;
@@ -18,11 +18,18 @@ public class PersistantStateCommand extends AbstractWayCommand {
 
     private final getPersistantState getter;
     private final setPersistantState setter;
+    private final boolean sendPacket;
 
     public PersistantStateCommand(String type, getPersistantState getter, setPersistantState setter) {
+        this(type, getter, setter, false);
+    }
+
+
+    public PersistantStateCommand(String type, getPersistantState getter, setPersistantState setter, boolean sendPacket) {
         super(2, type);
         this.getter = getter;
         this.setter = setter;
+        this.sendPacket = sendPacket;
     }
 
     public boolean getValue(Player player) {
@@ -39,6 +46,9 @@ public class PersistantStateCommand extends AbstractWayCommand {
                     getWayData(serverPlayer.getServer().overworld()),
                     BoolArgumentType.getBool(context, type)
             );
+            if (serverPlayer instanceof IWayPlayer wayPlayer && this.sendPacket) {
+                wayPlayer.way$updateRenderPreferences();
+            }
         }
     }
 

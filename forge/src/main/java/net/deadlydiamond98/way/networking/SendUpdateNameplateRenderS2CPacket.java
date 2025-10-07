@@ -1,5 +1,6 @@
 package net.deadlydiamond98.way.networking;
 
+import net.deadlydiamond98.way.Way;
 import net.deadlydiamond98.way.common.events.WayTickingEvent;
 import net.deadlydiamond98.way.util.PlayerLocation;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
@@ -41,6 +42,9 @@ public class SendUpdateNameplateRenderS2CPacket {
                     player.way$setSeeDist(buf.readBoolean());
                     player.way$setSeeColor(buf.readBoolean());
                     player.way$setSeeOutline(buf.readBoolean());
+
+                    Way.colorDistance = buf.readBoolean();
+                    Way.namePain = buf.readBoolean();
                 }
             }
         });

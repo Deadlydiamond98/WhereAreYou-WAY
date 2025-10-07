@@ -12,6 +12,9 @@
   "commands.way.color.reset": "Successfully reset %s's color",
   "commands.way.color.reset.multi": "Successfully reset the color of %s players",
 
+  "commands.way.color.fail": "Server admins have disabled the ability to use this command",
+  "commands.way.color.fail.multi": "Server admins have disabled the ability to use this command",
+
   "commands.way.focus": "Successfully set %s's targets to %s",
   "commands.way.focus.multi": "Successfully set the targets of %s players to %s",
 

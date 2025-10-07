@@ -52,6 +52,9 @@ public class WayFabricNetworking {
                 player.way$setSeeDist(buf.readBoolean());
                 player.way$setSeeColor(buf.readBoolean());
                 player.way$setSeeOutline(buf.readBoolean());
+
+                Way.colorDistance = buf.readBoolean();
+                Way.namePain = buf.readBoolean();
             }
         }
     }
@@ -81,7 +84,7 @@ public class WayFabricNetworking {
             ServerPlayNetworking.send(sender, UPDATE_PLAYER_PACKET, buf);
         }
 
-        public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines) {
+        public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean colordistance, boolean namePain) {
             FriendlyByteBuf buf = PacketByteBufs.create();
 
             buf.writeBoolean(toggle);
@@ -90,6 +93,9 @@ public class WayFabricNetworking {
             buf.writeBoolean(distance);
             buf.writeBoolean(colors);
             buf.writeBoolean(outlines);
+
+            buf.writeBoolean(colordistance);
+            buf.writeBoolean(namePain);
 
             ServerPlayNetworking.send(sender, UPDATE_NAMEPLATE_RENDER_PACKET, buf);
         }

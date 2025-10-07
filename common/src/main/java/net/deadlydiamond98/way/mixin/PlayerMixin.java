@@ -1,10 +1,12 @@
 package net.deadlydiamond98.way.mixin;
 
+import net.deadlydiamond98.way.common.command.WayServerCommands;
 import net.deadlydiamond98.way.platform.Service;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,6 +36,16 @@ public class PlayerMixin implements IWayPlayer {
 
     @Unique private int way$minRender = 0;
     @Unique private int way$maxRender = 999999;
+
+    @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
+    private void way$attack(Entity entity, CallbackInfo ci) {
+        Player player = (Player) (Object) this;
+        if (entity instanceof IWayPlayer wayPlayer && wayPlayer.way$getColor() == this.way$getColor()) {
+            if (player instanceof ServerPlayer serverPlayer && WayServerCommands.NO_FRIENDLY_FIRE.getValue(serverPlayer)) {
+                ci.cancel();
+            }
+        }
+    }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void way$readAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
@@ -133,7 +145,9 @@ public class PlayerMixin implements IWayPlayer {
                     this.way$seeNames,
                     this.way$seeDist,
                     this.way$seeColors,
-                    this.way$seeOutlines
+                    this.way$seeOutlines,
+                    WayServerCommands.COLOR_DISTANCE.getValue(sender),
+                    WayServerCommands.NAME_PAIN.getValue(sender)
             );
         }
     }
