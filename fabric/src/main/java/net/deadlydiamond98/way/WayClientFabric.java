@@ -2,8 +2,7 @@ package net.deadlydiamond98.way;
 
 import net.deadlydiamond98.way.client.WayFabricRenderType;
 import net.deadlydiamond98.way.client.WayKeybindings;
-import net.deadlydiamond98.way.client.WayNameplateRenderEvent;
-import net.deadlydiamond98.way.common.command.WayCommandArgTypes;
+import net.deadlydiamond98.way.client.renderer.WayNameplateRenderer;
 import net.deadlydiamond98.way.networking.WayFabricNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -17,7 +16,7 @@ public class WayClientFabric implements ClientModInitializer {
         KeyBindingHelper.registerKeyBinding(WayKeybindings.TOGGLE_NAMEPLATE);
         WayFabricNetworking.Client.registerS2CPackets();
         WorldRenderEvents.AFTER_ENTITIES.register(context -> {
-            WayNameplateRenderEvent.render(context.matrixStack(), context.consumers(), context.world(), context.tickDelta());
+            WayNameplateRenderer.render(context.matrixStack(), context.consumers(), context.world(), context.tickDelta());
         });
         WayFabricRenderType.register();
     }

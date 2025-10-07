@@ -2,7 +2,7 @@ package net.deadlydiamond98.way;
 
 import net.deadlydiamond98.way.client.WayForgeRenderType;
 import net.deadlydiamond98.way.client.WayKeybindings;
-import net.deadlydiamond98.way.client.WayNameplateRenderEvent;
+import net.deadlydiamond98.way.client.renderer.WayNameplateRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
@@ -22,7 +22,7 @@ public class WayClientForge {
                 return;
             }
             WayForgeRenderType.register();
-            WayNameplateRenderEvent.render(event.getPoseStack(), client.renderBuffers().bufferSource(), client.level, event.getPartialTick());
+            WayNameplateRenderer.render(event.getPoseStack(), client.renderBuffers().bufferSource(), client.level, event.getPartialTick());
         }
 
         @SubscribeEvent

@@ -19,7 +19,7 @@ public class WayTickingEvent {
     public static void tick(Level level) {
         List<Player> toRender = new ArrayList<>();
         level.players().forEach(player -> {
-            if (!player.isDiscrete()) {
+            if (!player.isInvisible()) {
                 toRender.add(player);
             }
         });

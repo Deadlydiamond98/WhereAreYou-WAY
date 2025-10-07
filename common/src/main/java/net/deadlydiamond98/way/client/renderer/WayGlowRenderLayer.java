@@ -1,4 +1,4 @@
-package net.deadlydiamond98.way.client;
+package net.deadlydiamond98.way.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
