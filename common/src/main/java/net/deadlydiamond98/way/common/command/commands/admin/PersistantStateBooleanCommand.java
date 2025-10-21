@@ -1,8 +1,9 @@
-package net.deadlydiamond98.way.common.command.commands;
+package net.deadlydiamond98.way.common.command.commands.admin;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import net.deadlydiamond98.way.common.command.commands.AbstractWayCommand;
 import net.deadlydiamond98.way.common.world.WaySavedData;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,18 +15,18 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 
 import java.util.List;
 
-public class PersistantStateCommand extends AbstractWayCommand {
+public class PersistantStateBooleanCommand extends AbstractWayCommand {
 
     private final getPersistantState getter;
     private final setPersistantState setter;
     private final boolean sendPacket;
 
-    public PersistantStateCommand(String type, getPersistantState getter, setPersistantState setter) {
+    public PersistantStateBooleanCommand(String type, getPersistantState getter, setPersistantState setter) {
         this(type, getter, setter, false);
     }
 
 
-    public PersistantStateCommand(String type, getPersistantState getter, setPersistantState setter, boolean sendPacket) {
+    public PersistantStateBooleanCommand(String type, getPersistantState getter, setPersistantState setter, boolean sendPacket) {
         super(2, type);
         this.getter = getter;
         this.setter = setter;
@@ -46,8 +47,8 @@ public class PersistantStateCommand extends AbstractWayCommand {
                     getWayData(serverPlayer.getServer().overworld()),
                     BoolArgumentType.getBool(context, type)
             );
-            if (serverPlayer instanceof IWayPlayer wayPlayer && this.sendPacket) {
-                wayPlayer.way$updateRenderPreferences();
+            if (serverPlayer instanceof IWayPlayer && this.sendPacket) {
+                player.getCommandSenderWorld().players().forEach(player1 -> ((IWayPlayer) player1).way$updateRenderPreferences());
             }
         }
     }

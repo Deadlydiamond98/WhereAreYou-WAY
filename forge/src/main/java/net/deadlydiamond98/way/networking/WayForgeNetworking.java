@@ -67,10 +67,14 @@ public class WayForgeNetworking {
         buf.writeBoolean(((IWayPlayer) player).way$showPlayer());
         buf.writeInt(((IWayPlayer) player).way$getColor());
 
+        buf.writeInt(player.hurtTime);
+        buf.writeFloat(player.getHealth());
+        buf.writeFloat(player.getMaxHealth());
+
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> sender), new SendUpdatePlayerS2CPacket(buf));
     }
 
-    public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean colordistance, boolean namePain) {
+    public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean head, boolean headOutline, boolean colordistance, boolean namePainFlash, boolean namePainGetRedder) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 
         buf.writeBoolean(toggle);
@@ -79,8 +83,12 @@ public class WayForgeNetworking {
         buf.writeBoolean(colors);
         buf.writeBoolean(outlines);
 
+        buf.writeBoolean(head);
+        buf.writeBoolean(headOutline);
+
         buf.writeBoolean(colordistance);
-        buf.writeBoolean(namePain);
+        buf.writeBoolean(namePainFlash);
+        buf.writeBoolean(namePainGetRedder);
 
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> sender), new SendUpdateNameplateRenderS2CPacket(buf));
     }

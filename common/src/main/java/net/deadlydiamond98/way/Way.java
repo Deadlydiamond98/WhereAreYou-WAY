@@ -4,12 +4,10 @@ import net.deadlydiamond98.way.common.command.WayCommandArgTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.util.Scanner;
-
 public class Way {
 
-    public static boolean namePain = true;
+    public static boolean namePainFlash = true;
+    public static boolean namePainGetRedder = false;
     public static boolean colorDistance = false;
 
     public static final String MOD_ID = "way";

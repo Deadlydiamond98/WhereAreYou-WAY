@@ -1,9 +1,9 @@
 package net.deadlydiamond98.way.client.renderer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.deadlydiamond98.way.Way;
 import net.deadlydiamond98.way.client.WayKeybindings;
 import net.deadlydiamond98.way.client.WayRenderTypes;
 import net.deadlydiamond98.way.common.events.WayTickingEvent;
@@ -21,7 +21,9 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -44,55 +46,28 @@ public class WayNameplateRenderer {
                 WayTickingEvent.PLAYER_POS.forEach(playerData -> {
                     if (playerData.getEyePosition().distanceTo(user.getEyePosition(renderTick)) > NAMETAG_RENDER_CUTTOFF) {
                         Vec3 pos = playerData.getPosition().add(0, playerData.nametagY, 0);
-                        renderNameplate(poseStack, bufferSource, level, renderTick, wayPlayer, playerData, pos);
+                        renderNameplate(poseStack, bufferSource, level, renderTick, wayPlayer, playerData, pos, null);
 
                     } else {
                         level.players().forEach(player -> {
 
-//                            boolean thirdPerson = user.equals(player) && !client.getEntityRenderDispatcher().camera.isDetached();
-                            boolean thirdPerson = false;
+                            boolean thirdPerson = user.equals(player) && !client.getEntityRenderDispatcher().camera.isDetached();
                             boolean invis = player.isDiscrete() || player.isInvisible();
                             boolean isSame = playerData.name.getString().equals(player.getName().getString());
 
                             if (isSame && !thirdPerson && !invis && player.distanceTo(user) <= NAMETAG_RENDER_CUTTOFF) {
                                 Vec3 pos = player.getPosition(renderTick).add(0, player.getNameTagOffsetY(), 0);
-                                renderNameplate(poseStack, bufferSource, level, renderTick, wayPlayer, playerData, pos);
-
+                                renderNameplate(poseStack, bufferSource, level, renderTick, wayPlayer, playerData, pos, player);
+//                                ((IWayPlayer) player).way$setColor(playerData.hex);
                             }
                         });
                     }
                 });
             }
         }
-
-        // DATA
-//            int nameHex = wayPlayer.way$canSeeColor() ? player.hex : 0xFFFFFF;
-//
-//            if (Way.colorDistance) {
-//                nameHex = ColorUtil.blendHexColors(nameHex, 0xFFFFFF, distance / 2000.0f);
-//            }
-//
-//            int distHex = wayPlayer.way$canSeeColor() ? player.hex : 0x55FFFF;
-//            distHex = wayPlayer.way$canSeeName() ? 0xFFFFFF : distHex;
-
-
-        // REG
-//            int nameHex = wayPlayer.way$canSeeColor() ? playerdata.hex : 0xFFFFFF;
-//
-//            if (Way.colorDistance) {
-//                nameHex = ColorUtil.blendHexColors(nameHex, 0xFFFFFF, distance / 2000.0f);
-//            }
-//
-//            if (Way.namePain) {
-//                nameHex = ColorUtil.blendHexColors(nameHex, 0xFF0000, player.hurtTime / 10.0f);
-//            }
-//            nameHex = nameHex  | 0xFF000000;
-//
-//            int distHex = wayPlayer.way$canSeeColor() ? playerdata.hex : 0x55FFFF;
-//            distHex = wayPlayer.way$canSeeName() ? 0xFFFFFF : distHex;
     }
     
-    private static void renderNameplate(PoseStack poseStack, MultiBufferSource bufferSource, ClientLevel level, float renderTick, IWayPlayer viewer, PlayerLocation data, Vec3 pos) {
+    private static void renderNameplate(PoseStack poseStack, MultiBufferSource bufferSource, ClientLevel level, float renderTick, IWayPlayer viewer, PlayerLocation data, Vec3 pos, @Nullable Player player) {
         poseStack.pushPose();
 
         int distance = getDistance(poseStack, renderTick, pos);
@@ -102,46 +77,49 @@ public class WayNameplateRenderer {
         float nameScale = 0.5f * mainScale;
         float distScale = 0.25f * mainScale;
 
+        if (viewer.way$canSeeName()) {
+            renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
+            renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, getNameHex(data, viewer, distance, player));
+        }
 
-//        if (viewer.way$canSeeName()) {
-//            int nameHex = viewer.way$canSeeColor() ? data.hex : 0xFFFFFF;
-//            int shadowHex = ColorUtil.blendHexColors(nameHex, 0xFF000000, 0.7f);
-//
-//            renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
-//
-//            renderText(poseStack, bufferSource, level, data.name, 0.03f, 0.03f, z, data.nametagY, nameScale, shadowHex);
-//            renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, nameHex);
-//        }
-//
-//        if (viewer.way$canSeeDist()) {
-//            int distHex = viewer.way$canSeeColor() ? data.hex : 0x55FFFF;
-//            int shadowHex = ColorUtil.blendHexColors(distHex, 0xFF000000, 0.7f);
-//
-//            renderBackplate(poseStack, bufferSource, dist, -2.75f, 0, distScale);
-//            renderText(poseStack, bufferSource, level, dist, 0.03f, 0.03f, z, data.nametagY - 7.5f, distScale, shadowHex);
-//            renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY - 7.5f, distScale, distHex);
-//        }
+        if (viewer.way$canSeeDist()) {
+            int distHex = viewer.way$canSeeColor() ? data.hex : 0x55FFFF;
+            distHex = viewer.way$canSeeName() ? 0xFFFFFF : distHex;
 
-        float z = 0.03f;
+            renderBackplate(poseStack, bufferSource, dist, viewer.way$canSeeName() ? -2.75f : -12, 0, distScale);
+            renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY + (viewer.way$canSeeName() ? -7.5f : 2), distScale, distHex);
+        }
 
-        int nameHex = viewer.way$canSeeColor() ? data.hex : 0xFFFFFF;
-        int distHex = viewer.way$canSeeColor() ? data.hex : 0x55FFFF;
-        int shadowHex = ColorUtil.blendHexColors(distHex, 0xFF000000, 0.7f);
-
-        renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
-        renderBackplate(poseStack, bufferSource, dist, -2.75f, 0, distScale);
-
-        // Back
-        renderText(poseStack, bufferSource, level, dist, 0.03f, 0.03f, z, data.nametagY - 7.5f, distScale, shadowHex);
-        renderText(poseStack, bufferSource, level, data.name, 0.03f, 0.03f, z, data.nametagY, nameScale, shadowHex);
-
-        // Front
-        renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY - 7.5f, distScale, distHex);
-        renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, nameHex);
-
-        renderPlayerIcon(poseStack, bufferSource, data.uuid, data.hex, 0.25f, 0.5f);
+        if (viewer.way$canSeeHead()) {
+            float yOffset = -0.2f;
+            if (viewer.way$canSeeDist()) {
+                yOffset += 0.25f;
+            }
+            if (viewer.way$canSeeName()) {
+                yOffset += 0.35f;
+            }
+            renderPlayerIcon(poseStack, bufferSource, data.uuid, data.hex, yOffset, 0.45f, viewer);
+        }
 
         poseStack.popPose();
+    }
+
+    private static int getNameHex(PlayerLocation data, IWayPlayer viewer, int distance, @Nullable Player player) {
+        int nameHex = viewer.way$canSeeColor() ? data.hex : 0xFFFFFFFF;
+
+        if (Way.colorDistance) {
+            nameHex = ColorUtil.blendHexColors(nameHex, 0xFFFFFFFF, (distance - viewer.way$getMinRender()) / (float) Math.max(1, viewer.way$getMaxRender()));
+        }
+
+        if (player != null && Way.namePainFlash) {
+            nameHex = ColorUtil.blendHexColors(nameHex, 0xFFFF0000, player.hurtTime / 10.0f);
+        }
+
+        if (Way.namePainGetRedder) {
+            nameHex = ColorUtil.blendHexColors(0xFFFF0000, nameHex, data.health / data.maxHealth);
+        }
+
+        return nameHex  | 0xFF000000;
     }
 
     private static void renderText(PoseStack poseStack, MultiBufferSource bufferSource, ClientLevel level, Component name, float x, float y, float z, float yOffset, float scale, int color) {
@@ -171,14 +149,16 @@ public class WayNameplateRenderer {
         renderBillboardingFace(poseStack, vConsumer, -width / 2.0f, y, z, width, font.lineHeight, alpha, rgb, rgb, rgb, scale);
     }
 
-    private static void renderPlayerIcon(PoseStack poseStack, MultiBufferSource bufferSource, UUID uuid, int hex, float y, float scale) {
+    private static void renderPlayerIcon(PoseStack poseStack, MultiBufferSource bufferSource, UUID uuid, int hex, float y, float scale, IWayPlayer viewer) {
         float sizeOffset = 0.1f;
 
         float x = -0.5f;
         float bgWidthHeight = 1 + (sizeOffset * 2);
 
-        VertexConsumer vConBG = bufferSource.getBuffer(WayRenderTypes.getFullbrightNoDepthShape());
-        renderBillboardingFace(poseStack, vConBG, x - sizeOffset, y - sizeOffset, 0.001f, bgWidthHeight, bgWidthHeight, hex, scale);
+        if (viewer.way$canSeeHeadOutline()) {
+            VertexConsumer vConBG = bufferSource.getBuffer(WayRenderTypes.getFullbrightNoDepthShape());
+            renderBillboardingFace(poseStack, vConBG, x - sizeOffset, y - sizeOffset, 0.001f, bgWidthHeight, bgWidthHeight, hex, scale);
+        }
 
         ClientPacketListener connection =  Minecraft.getInstance().getConnection();
 
@@ -213,6 +193,7 @@ public class WayNameplateRenderer {
         return (int) Math.floor(currentDistance);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static void renderBillboardingFace(PoseStack poseStack, VertexConsumer vCon, float x, float y, float z, float width, float height, int hex, float scale) {
         FaceRenderingUtil.renderBillboardingFace(poseStack, vCon, x, y, z, UV[0], UV[1], UV[0], UV[1], width, height, hex, scale);

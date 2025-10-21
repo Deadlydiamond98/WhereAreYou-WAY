@@ -23,6 +23,7 @@ public class PlayerMixin implements IWayPlayer {
 
     @Unique private boolean way$showPlayer = true;
     @Unique private int way$color = 0xFFFFFF;
+    @Unique private boolean way$isClear = true;
     @Unique private List<Component> way$players = new ArrayList<>();
     @Unique private Integer way$focusedColor = null;
 
@@ -32,6 +33,8 @@ public class PlayerMixin implements IWayPlayer {
     @Unique private boolean way$seeDist = true;
     @Unique private boolean way$seeColors = true;
     @Unique private boolean way$seeOutlines = false;
+    @Unique private boolean way$seeHead = true;
+    @Unique private boolean way$seeHeadOutline = true;
     @Unique private boolean way$seeSelf = false;
 
     @Unique private int way$minRender = 0;
@@ -51,26 +54,38 @@ public class PlayerMixin implements IWayPlayer {
     private void way$readAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
         this.way$showPlayer = nbt.getBoolean("showPlayerWAY");
         this.way$color = nbt.getInt("colorWAY");
-
+        this.way$isClear = nbt.getBoolean("clearWay");
         this.way$toggle = nbt.getBoolean("toggleWay");
+
         this.way$seeNames = nbt.getBoolean("seeNameWay");
         this.way$seeDist = nbt.getBoolean("seeDistWay");
         this.way$seeColors = nbt.getBoolean("seeColorWay");
         this.way$seeOutlines = nbt.getBoolean("seeOutlineWay");
         this.way$seeSelf = nbt.getBoolean("seeSelfWay");
+        this.way$seeHead = nbt.getBoolean("seeHeadWay");
+        this.way$seeHeadOutline = nbt.getBoolean("seeHeadOutlineWay");
+
+        this.way$minRender = nbt.getInt("minRenderWay");
+        this.way$maxRender = nbt.getInt("maxRenderWay");
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void way$addAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
         nbt.putBoolean("showPlayerWAY", way$showPlayer);
         nbt.putInt("colorWAY", way$color);
-
+        nbt.putBoolean("clearWay", way$isClear);
         nbt.putBoolean("toggleWay", way$toggle);
+
         nbt.putBoolean("seeNameWay", way$seeNames);
         nbt.putBoolean("seeDistWay", way$seeDist);
         nbt.putBoolean("seeColorWay", way$seeColors);
         nbt.putBoolean("seeOutlineWay", way$seeOutlines);
         nbt.putBoolean("seeSelfWay", way$seeSelf);
+        nbt.putBoolean("seeHeadWay", way$seeHead);
+        nbt.putBoolean("seeHeadOutlineWay", way$seeHeadOutline);
+
+        nbt.putInt("minRenderWay", way$minRender);
+        nbt.putInt("maxRenderWay", way$maxRender);
     }
 
     @Override
@@ -102,6 +117,16 @@ public class PlayerMixin implements IWayPlayer {
     @Override
     public int way$getColor() {
         return this.way$color | 0xFF000000;
+    }
+
+    @Override
+    public void way$setClear(boolean bl) {
+        this.way$isClear = bl;
+    }
+
+    @Override
+    public boolean way$isClear() {
+        return this.way$isClear;
     }
 
     // FOCUS COMMAND METHODS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -146,8 +171,11 @@ public class PlayerMixin implements IWayPlayer {
                     this.way$seeDist,
                     this.way$seeColors,
                     this.way$seeOutlines,
+                    this.way$seeHead,
+                    this.way$seeHeadOutline,
                     WayServerCommands.COLOR_DISTANCE.getValue(sender),
-                    WayServerCommands.NAME_PAIN.getValue(sender)
+                    WayServerCommands.NAME_PAIN_FLASH.getValue(sender),
+                    WayServerCommands.NAME_PAIN_REDDER.getValue(sender)
             );
         }
     }
@@ -194,6 +222,28 @@ public class PlayerMixin implements IWayPlayer {
     @Override
     public boolean way$canSeeOutline() {
         return this.way$seeOutlines;
+    }
+
+    @Override
+    public void way$setSeeHead(boolean bool) {
+        this.way$seeHead = bool;
+        way$updateRenderPreferences();
+    }
+
+    @Override
+    public boolean way$canSeeHead() {
+        return this.way$seeHead;
+    }
+
+    @Override
+    public void way$setSeeHeadOutline(boolean bool) {
+        this.way$seeHeadOutline = bool;
+        way$updateRenderPreferences();
+    }
+
+    @Override
+    public boolean way$canSeeHeadOutline() {
+        return this.way$seeHeadOutline;
     }
 
     @Override

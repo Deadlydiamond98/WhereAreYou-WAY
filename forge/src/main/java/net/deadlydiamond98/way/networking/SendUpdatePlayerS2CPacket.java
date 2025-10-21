@@ -33,7 +33,8 @@ public class SendUpdatePlayerS2CPacket {
                         buf.readDouble(), buf.readDouble(), buf.readDouble(),
                         buf.readDouble(),
                         buf.readUUID(),
-                        buf.readBoolean(), buf.readInt()
+                        buf.readBoolean(), buf.readInt(),
+                        buf.readInt(), buf.readFloat(), buf.readFloat()
                 ));
             }
         });

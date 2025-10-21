@@ -6,34 +6,40 @@ import net.minecraft.world.level.saveddata.SavedData;
 public class WaySavedData extends SavedData {
 
     private boolean colorDistance = false;
-    private boolean namePain = true;
+    private boolean namePainFlash = true;
+    private boolean namePainGetRedder = false;
     private boolean forceOptIn = false;
     private boolean lockColor = false;
     private boolean seeTeamColorOnly = false;
     private boolean seeAll = false;
     private boolean teamColourNoFriendlyFire = false;
+    private int packetUpdateRate = 5;
 
     @Override
     public CompoundTag save(CompoundTag nbt) {
         nbt.putBoolean("colorDistanceWay", this.colorDistance);
-        nbt.putBoolean("namePainWay", this.namePain);
+        nbt.putBoolean("namePainFlashWay", this.namePainFlash);
+        nbt.putBoolean("namePainGetRedder", this.namePainGetRedder);
         nbt.putBoolean("forceOptInWay", this.forceOptIn);
         nbt.putBoolean("lockColorWay", this.lockColor);
         nbt.putBoolean("seeTeamColorOnlyWay", this.seeTeamColorOnly);
         nbt.putBoolean("seeAllWay", this.seeAll);
         nbt.putBoolean("teamColourNoFriendlyFireWay", this.teamColourNoFriendlyFire);
+        nbt.putInt("packetUpdateRate", this.packetUpdateRate);
         return nbt;
     }
 
     public static WaySavedData fromNbt(CompoundTag nbt) {
         WaySavedData data = new WaySavedData();
         data.colorDistance = nbt.getBoolean("colorDistanceWay");
-        data.namePain = nbt.getBoolean("namePainWay");
+        data.namePainFlash = nbt.getBoolean("namePainFlashWay");
+        data.namePainGetRedder = nbt.getBoolean("namePainGetRedder");
         data.forceOptIn = nbt.getBoolean("forceOptInWay");
         data.lockColor = nbt.getBoolean("lockColorWay");
         data.seeTeamColorOnly = nbt.getBoolean("seeTeamColorOnlyWay");
         data.seeAll = nbt.getBoolean("seeAllWay");
         data.teamColourNoFriendlyFire = nbt.getBoolean("teamColourNoFriendlyFireWay");
+        data.packetUpdateRate = nbt.getInt("packetUpdateRate");
         return data;
     }
 
@@ -43,8 +49,12 @@ public class WaySavedData extends SavedData {
         return this.colorDistance;
     }
 
-    public boolean namePain() {
-        return this.namePain;
+    public boolean namePainFlash() {
+        return this.namePainFlash;
+    }
+
+    public boolean namePainGetRedder() {
+        return this.namePainGetRedder;
     }
 
     public boolean forceOptIn() {
@@ -67,6 +77,10 @@ public class WaySavedData extends SavedData {
         return this.teamColourNoFriendlyFire;
     }
 
+    public int getPacketUpdateRate() {
+        return this.packetUpdateRate;
+    }
+
     // SETTERS
 
     public void setColorDistance(boolean colorDistance) {
@@ -74,8 +88,13 @@ public class WaySavedData extends SavedData {
         this.setDirty();
     }
 
-    public void setNamePain(boolean namePain) {
-        this.namePain = namePain;
+    public void setNamePainFlash(boolean namePainFlash) {
+        this.namePainFlash = namePainFlash;
+        this.setDirty();
+    }
+
+    public void setNamePainGetRedder(boolean namePainGetRedder) {
+        this.namePainGetRedder = namePainGetRedder;
         this.setDirty();
     }
 
@@ -101,6 +120,11 @@ public class WaySavedData extends SavedData {
 
     public void setTeamColourNoFriendlyFire(boolean teamColourNoFriendlyFire) {
         this.teamColourNoFriendlyFire = teamColourNoFriendlyFire;
+        this.setDirty();
+    }
+
+    public void setPacketUpdateRate(int packetUpdateRate) {
+        this.packetUpdateRate = packetUpdateRate;
         this.setDirty();
     }
 }

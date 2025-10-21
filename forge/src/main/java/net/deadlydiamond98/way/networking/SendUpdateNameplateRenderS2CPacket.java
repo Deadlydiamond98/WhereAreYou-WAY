@@ -1,8 +1,6 @@
 package net.deadlydiamond98.way.networking;
 
 import net.deadlydiamond98.way.Way;
-import net.deadlydiamond98.way.common.events.WayTickingEvent;
-import net.deadlydiamond98.way.util.PlayerLocation;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -42,9 +40,12 @@ public class SendUpdateNameplateRenderS2CPacket {
                     player.way$setSeeDist(buf.readBoolean());
                     player.way$setSeeColor(buf.readBoolean());
                     player.way$setSeeOutline(buf.readBoolean());
+                    player.way$setSeeHead(buf.readBoolean());
+                    player.way$setSeeHeadOutline(buf.readBoolean());
 
                     Way.colorDistance = buf.readBoolean();
-                    Way.namePain = buf.readBoolean();
+                    Way.namePainFlash = buf.readBoolean();
+                    Way.namePainGetRedder = buf.readBoolean();
                 }
             }
         });

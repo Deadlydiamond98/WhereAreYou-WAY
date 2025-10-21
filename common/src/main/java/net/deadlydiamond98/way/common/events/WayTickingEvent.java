@@ -7,7 +7,10 @@ import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,8 @@ public class WayTickingEvent {
             }
         });
         level.players().forEach(sender -> {
-            if (sender.tickCount % UPDATE_RATE == 0) {
+            int rate = Math.max(1, WayServerCommands.PACKET_UPDATE_RATE.getValue(sender));
+            if (sender.tickCount % rate == 0) {
                 Service.PLATFORM.sendS2CClearPacket((ServerPlayer) sender);
                 for (Player player : toRender) {
                     if (canRenderNameplate(sender, player)) {
@@ -45,25 +49,43 @@ public class WayTickingEvent {
         double distance = sender.position().distanceTo(player.position());
         boolean inRange = distance >= iWaySender.way$getMinRender() && distance <= iWaySender.way$getMaxRender();
 
-        if ((sender == player && !iWaySender.way$canSeeSelf()) || !inRange) {
+        if ((sender == player && !iWaySender.way$canSeeSelf()) || (!inRange && sender != player)) {
             return false;
         }
 
         if (WayServerCommands.SEE_ALL.getValue(sender)) {
-            return iWayPlayer.way$showPlayer();
+            return canRender(sender, player, iWayPlayer.way$showPlayer());
         }
 
         boolean focus = focusColor != null;
 
         if (WayServerCommands.SEE_TEAM_ONLY.getValue(sender)) {
+            if (iWaySender.way$isClear() && iWayPlayer.way$isClear()) {
+                return canRender(sender, player, true);
+            }
             return focus && focusColor == iWayPlayer.way$getColor();
         } else if (focus) {
-            return focusColor == iWayPlayer.way$getColor();
+            if (iWaySender.way$isClear() && iWayPlayer.way$isClear()) {
+                return canRender(sender, player, true);
+            }
+            return canRender(sender, player, focusColor == iWayPlayer.way$getColor());
         }
         if (!targets.isEmpty()) {
-            return targets.contains(player.getName());
+            return canRender(sender, player, targets.contains(player.getName()));
         }
 
-        return WayServerCommands.FORCE_OPT.getValue(sender) || iWayPlayer.way$showPlayer();
+        return canRender(sender, player, WayServerCommands.FORCE_OPT.getValue(sender) || iWayPlayer.way$showPlayer());
+    }
+
+    private static boolean canRender(Player sender, Player player, boolean returnVal) {
+        if (sender.distanceTo(player) < 100 && (sender != player)) {
+            ClipContext context = new ClipContext(sender.getEyePosition(), player.getEyePosition(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player);
+            BlockHitResult hitResult = sender.level().clip(context);
+            if (hitResult.getType() == HitResult.Type.BLOCK) {
+                return returnVal;
+            }
+            return false;
+        }
+        return returnVal;
     }
 }

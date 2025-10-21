@@ -13,8 +13,11 @@ public class PlayerLocation {
     public final UUID uuid;
     public final boolean show;
     public final int hex;
+    public final int hurtTime;
+    public final float health;
+    public final float maxHealth;
 
-    public PlayerLocation(Component name, float nametagY, double x, double y, double z, double eyeHeight, UUID uuid, boolean show, int hex) {
+    public PlayerLocation(Component name, float nametagY, double x, double y, double z, double eyeHeight, UUID uuid, boolean show, int hex, int hurtTime, float health, float maxHealth) {
         this.name = name;
         this.nametagY = nametagY;
         this.x = x;
@@ -26,6 +29,9 @@ public class PlayerLocation {
 
         this.show = show;
         this.hex = hex;
+        this.hurtTime = hurtTime;
+        this.health = health;
+        this.maxHealth = maxHealth;
     }
 
     public final Vec3 getEyePosition() {

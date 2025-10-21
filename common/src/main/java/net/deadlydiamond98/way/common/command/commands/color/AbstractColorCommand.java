@@ -33,6 +33,7 @@ public abstract class AbstractColorCommand extends AbstractWayCommand {
     protected void execute(CommandContext<CommandSourceStack> context, Player player) {
         if (!WayServerCommands.LOCK_COLOR.getValue(player) || this.isOP()) {
             ((IWayPlayer) player).way$setColor(getColor(context));
+            ((IWayPlayer) player).way$setClear(false);
         }
     }
 

@@ -18,6 +18,7 @@ public class ClearColorCommand extends AbstractWayCommand {
     @Override
     protected void execute(CommandContext<CommandSourceStack> context, Player player) {
         ((IWayPlayer) player).way$setColor(0xFFFFFF);
+        ((IWayPlayer) player).way$setClear(true);
     }
 
     @Override

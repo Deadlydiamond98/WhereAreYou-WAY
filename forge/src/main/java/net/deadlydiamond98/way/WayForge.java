@@ -1,6 +1,7 @@
 package net.deadlydiamond98.way;
 
 import net.deadlydiamond98.way.common.command.WayServerCommands;
+import net.deadlydiamond98.way.common.events.WayRespawnEvent;
 import net.deadlydiamond98.way.common.events.WayTickingEvent;
 import net.deadlydiamond98.way.networking.WayForgeNetworking;
 import net.deadlydiamond98.way.platform.ForgePlatformHelper;
@@ -36,6 +37,11 @@ public class WayForge {
             if (event.phase == TickEvent.Phase.END || event.side == LogicalSide.CLIENT) return;
             Level level = event.level;
             WayTickingEvent.tick(level);
+        }
+
+        @SubscribeEvent
+        public static void respawnEvents(PlayerEvent.Clone event) {
+            WayRespawnEvent.respawn(event.getOriginal(), event.getEntity(), event.isWasDeath());
         }
 
         @SubscribeEvent

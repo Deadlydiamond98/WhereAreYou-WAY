@@ -15,6 +15,9 @@ public interface IWayPlayer {
     void way$setColor(int hex);
     int way$getColor();
 
+    void way$setClear(boolean bl);
+    boolean way$isClear();
+
     void way$setFocusedPlayerNames(List<Component> players);
     List<Component> way$getFocusedPlayerNames();
 
@@ -35,6 +38,12 @@ public interface IWayPlayer {
 
     void way$setSeeOutline(boolean bool);
     boolean way$canSeeOutline();
+
+    void way$setSeeHead(boolean bool);
+    boolean way$canSeeHead();
+
+    void way$setSeeHeadOutline(boolean bool);
+    boolean way$canSeeHeadOutline();
 
     void way$setSeeSelf(boolean bool);
     boolean way$canSeeSelf();

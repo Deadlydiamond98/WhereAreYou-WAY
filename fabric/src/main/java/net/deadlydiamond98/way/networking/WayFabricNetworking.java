@@ -39,7 +39,8 @@ public class WayFabricNetworking {
                             buf.readDouble(), buf.readDouble(), buf.readDouble(),
                             buf.readDouble(),
                             buf.readUUID(),
-                            buf.readBoolean(), buf.readInt()
+                            buf.readBoolean(), buf.readInt(),
+                            buf.readInt(), buf.readFloat(), buf.readFloat()
             ));
         }
 
@@ -52,9 +53,12 @@ public class WayFabricNetworking {
                 player.way$setSeeDist(buf.readBoolean());
                 player.way$setSeeColor(buf.readBoolean());
                 player.way$setSeeOutline(buf.readBoolean());
+                player.way$setSeeHead(buf.readBoolean());
+                player.way$setSeeHeadOutline(buf.readBoolean());
 
                 Way.colorDistance = buf.readBoolean();
-                Way.namePain = buf.readBoolean();
+                Way.namePainFlash = buf.readBoolean();
+                Way.namePainGetRedder = buf.readBoolean();
             }
         }
     }
@@ -81,10 +85,14 @@ public class WayFabricNetworking {
             buf.writeBoolean(((IWayPlayer) player).way$showPlayer());
             buf.writeInt(((IWayPlayer) player).way$getColor());
 
+            buf.writeInt(player.hurtTime);
+            buf.writeFloat(player.getHealth());
+            buf.writeFloat(player.getMaxHealth());
+
             ServerPlayNetworking.send(sender, UPDATE_PLAYER_PACKET, buf);
         }
 
-        public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean colordistance, boolean namePain) {
+        public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean head, boolean headOutline, boolean colordistance, boolean namePainFlash, boolean namePainGetRedder) {
             FriendlyByteBuf buf = PacketByteBufs.create();
 
             buf.writeBoolean(toggle);
@@ -94,8 +102,12 @@ public class WayFabricNetworking {
             buf.writeBoolean(colors);
             buf.writeBoolean(outlines);
 
+            buf.writeBoolean(head);
+            buf.writeBoolean(headOutline);
+
             buf.writeBoolean(colordistance);
-            buf.writeBoolean(namePain);
+            buf.writeBoolean(namePainFlash);
+            buf.writeBoolean(namePainGetRedder);
 
             ServerPlayNetworking.send(sender, UPDATE_NAMEPLATE_RENDER_PACKET, buf);
         }

@@ -2,7 +2,9 @@ package net.deadlydiamond98.way.common.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.deadlydiamond98.way.common.command.commands.*;
-import net.deadlydiamond98.way.common.command.commands.PersistantStateCommand;
+import net.deadlydiamond98.way.common.command.commands.admin.NamePainCommand;
+import net.deadlydiamond98.way.common.command.commands.admin.PersistantStateBooleanCommand;
+import net.deadlydiamond98.way.common.command.commands.admin.PersistantStateIntegerCommand;
 import net.deadlydiamond98.way.common.command.commands.color.ClearColorCommand;
 import net.deadlydiamond98.way.common.command.commands.color.DyeColorCommmand;
 import net.deadlydiamond98.way.common.command.commands.color.HexColorCommand;
@@ -51,6 +53,12 @@ public class WayServerCommands {
     private static final AbstractWayCommand SEE_OUTLINE = new SeeCommand(0, "outline",
             (player, bool) -> ((IWayPlayer) player).way$setSeeOutline(bool)
     );
+    private static final AbstractWayCommand SEE_HEAD = new SeeCommand(0, "head",
+            (player, bool) -> ((IWayPlayer) player).way$setSeeHead(bool)
+    );
+    private static final AbstractWayCommand SEE_HEAD_OUTLINE = new SeeCommand(0, "headOutline",
+            (player, bool) -> ((IWayPlayer) player).way$setSeeHeadOutline(bool)
+    );
     private static final AbstractWayCommand SEE_SELF = new SeeCommand(0, "self",
             (player, bool) -> ((IWayPlayer) player).way$setSeeSelf(bool)
     );
@@ -97,26 +105,32 @@ public class WayServerCommands {
 
 
     // admin exclusive
-    public static final PersistantStateCommand COLOR_DISTANCE = new PersistantStateCommand("colourDistance",
+    public static final PersistantStateBooleanCommand COLOR_DISTANCE = new PersistantStateBooleanCommand("colourDistance",
             WaySavedData::colorDistance, WaySavedData::setColorDistance
     );
-    public static final PersistantStateCommand NAME_PAIN = new PersistantStateCommand("namePain",
-            WaySavedData::namePain, WaySavedData::setNamePain
+    public static final NamePainCommand NAME_PAIN_FLASH = new NamePainCommand("nameFlashesWhenHurt",
+            WaySavedData::namePainFlash, WaySavedData::setNamePainFlash, true
     );
-    public static final PersistantStateCommand FORCE_OPT = new PersistantStateCommand("forceOpt-in",
+    public static final NamePainCommand NAME_PAIN_REDDER = new NamePainCommand("nameColourGetsRedder",
+            WaySavedData::namePainGetRedder, WaySavedData::setNamePainGetRedder, true
+    );
+    public static final PersistantStateBooleanCommand FORCE_OPT = new PersistantStateBooleanCommand("forceOpt-in",
             WaySavedData::forceOptIn, WaySavedData::setForceOptIn
     );
-    public static final PersistantStateCommand LOCK_COLOR = new PersistantStateCommand("lockColour",
+    public static final PersistantStateBooleanCommand LOCK_COLOR = new PersistantStateBooleanCommand("lockColour",
             WaySavedData::lockColor, WaySavedData::setLockColor
     );
-    public static final PersistantStateCommand SEE_TEAM_ONLY = new PersistantStateCommand("seeTeamColourOnly",
+    public static final PersistantStateBooleanCommand SEE_TEAM_ONLY = new PersistantStateBooleanCommand("seeTeamColourOnly",
             WaySavedData::seeTeamColorOnly, WaySavedData::setSeeTeamColorOnly
     );
-    public static final PersistantStateCommand SEE_ALL = new PersistantStateCommand("seeAll",
+    public static final PersistantStateBooleanCommand SEE_ALL = new PersistantStateBooleanCommand("seeAll",
             WaySavedData::seeAll, WaySavedData::setSeeAll
     );
-    public static final PersistantStateCommand NO_FRIENDLY_FIRE = new PersistantStateCommand("teamColourNoFriendlyFire",
+    public static final PersistantStateBooleanCommand NO_FRIENDLY_FIRE = new PersistantStateBooleanCommand("teamColourNoFriendlyFire",
             WaySavedData::teamColourNoFriendlyFire, WaySavedData::setTeamColourNoFriendlyFire
+    );
+    public static final PersistantStateIntegerCommand PACKET_UPDATE_RATE = new PersistantStateIntegerCommand("packetUpdateRate",
+            WaySavedData::getPacketUpdateRate, WaySavedData::setPacketUpdateRate
     );
 
 
