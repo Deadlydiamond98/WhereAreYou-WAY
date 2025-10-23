@@ -46,6 +46,9 @@ public class SendUpdateNameplateRenderS2CPacket {
                     Way.colorDistance = buf.readBoolean();
                     Way.namePainFlash = buf.readBoolean();
                     Way.namePainGetRedder = buf.readBoolean();
+
+                    Way.minRender = buf.readInt();
+                    Way.maxRender = buf.readInt();
                 }
             }
         });

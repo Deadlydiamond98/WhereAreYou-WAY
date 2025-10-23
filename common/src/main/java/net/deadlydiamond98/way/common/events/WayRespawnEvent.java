@@ -25,8 +25,5 @@ public class WayRespawnEvent {
 
         newWay.way$setFocusedColor(oldWay.way$getFocusedColor());
         newWay.way$setFocusedPlayerNames(oldWay.way$getFocusedPlayerNames());
-
-        newWay.way$setMinRender(oldWay.way$getMinRender());
-        newWay.way$setMaxRender(oldWay.way$getMaxRender());
     }
 }

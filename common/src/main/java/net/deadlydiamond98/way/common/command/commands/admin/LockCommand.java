@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.deadlydiamond98.way.common.command.commands.AbstractWayCommand;
 import net.deadlydiamond98.way.common.world.WaySavedData;
-import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -18,22 +17,17 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import java.util.Collection;
 import java.util.List;
 
-public class PersistantStateBooleanCommand extends AbstractWayCommand {
+public class LockCommand extends AbstractWayCommand {
 
     private final getPersistantState getter;
     private final setPersistantState setter;
-    private final boolean sendPacket;
+    private final String lockType;
 
-    public PersistantStateBooleanCommand(String type, getPersistantState getter, setPersistantState setter) {
-        this(type, getter, setter, false);
-    }
-
-
-    public PersistantStateBooleanCommand(String type, getPersistantState getter, setPersistantState setter, boolean sendPacket) {
-        super(2, type);
+    public LockCommand(String type, getPersistantState getter, setPersistantState setter) {
+        super(2, "lock");
+        this.lockType = type;
         this.getter = getter;
         this.setter = setter;
-        this.sendPacket = sendPacket;
     }
 
     public boolean getValue(Player player) {
@@ -46,13 +40,7 @@ public class PersistantStateBooleanCommand extends AbstractWayCommand {
     @Override
     protected void execute(CommandContext<CommandSourceStack> context, Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            setter.set(
-                    getWayData(serverPlayer.getServer().overworld()),
-                    BoolArgumentType.getBool(context, type)
-            );
-            if (serverPlayer instanceof IWayPlayer && this.sendPacket) {
-                player.getCommandSenderWorld().players().forEach(player1 -> ((IWayPlayer) player1).way$updateRenderPreferences());
-            }
+            setter.set(getWayData(serverPlayer.getServer().overworld()), BoolArgumentType.getBool(context, type));
         }
     }
 
@@ -63,7 +51,7 @@ public class PersistantStateBooleanCommand extends AbstractWayCommand {
 
     @Override
     protected List<ArgumentBuilder<CommandSourceStack, ?>> getExtraCommandParts() {
-        return List.of(Commands.argument(type, BoolArgumentType.bool()));
+        return List.of(Commands.literal(this.lockType), Commands.argument(type, BoolArgumentType.bool()));
     }
 
     @Override
@@ -80,6 +68,11 @@ public class PersistantStateBooleanCommand extends AbstractWayCommand {
     protected void successMSG(CommandContext<CommandSourceStack> context, Collection<? extends Player> players) {
         MutableComponent base = Component.translatable(LANG_PREFIX + getID(context, players.iterator().next()), getNewValue(context));
         sendSuccess(context, base, players.iterator().next());
+    }
+
+    @Override
+    protected String getID(CommandContext<CommandSourceStack> context, Player player) {
+        return super.getID(context, player) + "." + this.lockType;
     }
 
     @FunctionalInterface public interface getPersistantState {

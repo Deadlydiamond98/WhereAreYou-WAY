@@ -31,10 +31,14 @@ public abstract class AbstractColorCommand extends AbstractWayCommand {
 
     @Override
     protected void execute(CommandContext<CommandSourceStack> context, Player player) {
-        if (!WayServerCommands.LOCK_COLOR.getValue(player) || this.isOP()) {
+        if (canRun(player)) {
             ((IWayPlayer) player).way$setColor(getColor(context));
             ((IWayPlayer) player).way$setClear(false);
         }
+    }
+
+    private boolean canRun(Player player) {
+        return !WayServerCommands.LOCK_COLOR.getValue(player) || player.hasPermissions(this.permLvl);
     }
 
     @Override
@@ -49,7 +53,7 @@ public abstract class AbstractColorCommand extends AbstractWayCommand {
 
     @Override
     protected String getID(CommandContext<CommandSourceStack> context, Player player) {
-        if (WayServerCommands.LOCK_COLOR.getValue(player) && !this.isOP()) {
+        if (!canRun(player)) {
             return "color.fail";
         }
         if (isColor(context)) {
@@ -60,11 +64,10 @@ public abstract class AbstractColorCommand extends AbstractWayCommand {
 
     @Override
     protected void sendSuccess(CommandContext<CommandSourceStack> context, MutableComponent base, Player player) {
-        boolean locked = WayServerCommands.LOCK_COLOR.getValue(player) && !this.isOP();
-        if (isColor(context) && !locked) {
+        if (isColor(context) && canRun(player)) {
             base.append(Component.literal("■").setStyle(Style.EMPTY.withColor(getColor(context))));
         }
-        Style errorColor = !locked ? Style.EMPTY : Style.EMPTY.withColor(ChatFormatting.DARK_RED);
+        Style errorColor = canRun(player) ? Style.EMPTY : Style.EMPTY.withColor(ChatFormatting.DARK_RED);
         super.sendSuccess(context, base.withStyle(errorColor), player);
     }
 }

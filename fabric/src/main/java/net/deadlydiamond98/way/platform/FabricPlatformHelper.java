@@ -28,8 +28,10 @@ public class FabricPlatformHelper implements PlatformHelper {
     }
 
     @Override
-    public void sendS2CRenderingPacket(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean head, boolean headOutline, boolean colordistance, boolean namePainFlash, boolean namePainGetRedder) {
-        WayFabricNetworking.Server.sendRenderValues(sender, toggle, names, distance, colors, outlines, head, headOutline, colordistance, namePainFlash, namePainGetRedder);
+    public void sendS2CRenderingPacket(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean head, boolean headOutline,
+                                       boolean colordistance, boolean namePainFlash, boolean namePainGetRedder, int minRender, int maxRender) {
+        WayFabricNetworking.Server.sendRenderValues(sender, toggle, names, distance, colors, outlines, head, headOutline,
+                colordistance, namePainFlash, namePainGetRedder, minRender, maxRender);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

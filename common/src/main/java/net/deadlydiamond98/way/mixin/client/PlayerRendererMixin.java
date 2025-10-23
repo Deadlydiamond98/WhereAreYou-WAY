@@ -2,11 +2,10 @@ package net.deadlydiamond98.way.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.deadlydiamond98.way.client.WayKeybindings;
-import net.minecraft.client.model.EntityModel;
+import net.deadlydiamond98.way.common.events.WayTickingEvent;
+import net.deadlydiamond98.way.util.PlayerLocation;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,8 +19,18 @@ public abstract class PlayerRendererMixin {
 
     @Inject(method = "renderNameTag(Lnet/minecraft/client/player/AbstractClientPlayer;Lnet/minecraft/network/chat/Component;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At("HEAD"), cancellable = true)
     private void way$renderNameTag(AbstractClientPlayer $$0, Component $$1, PoseStack $$2, MultiBufferSource $$3, int $$4, CallbackInfo ci) {
-        if (WayKeybindings.renderNameOverlay()) {
+        if (WayKeybindings.renderNameOverlay() && way$canSeePlayer($$0)) {
             ci.cancel();
         }
+    }
+
+    @Unique
+    private boolean way$canSeePlayer(AbstractClientPlayer player) {
+        for (PlayerLocation playerData : WayTickingEvent.PLAYER_POS) {
+            if (playerData.name.getString().equals(player.getName().getString())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

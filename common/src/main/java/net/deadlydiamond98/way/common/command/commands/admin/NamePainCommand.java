@@ -8,11 +8,14 @@ import net.deadlydiamond98.way.common.world.WaySavedData;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 
+import java.util.Collection;
 import java.util.List;
 
 public class NamePainCommand extends AbstractWayCommand {
@@ -73,6 +76,17 @@ public class NamePainCommand extends AbstractWayCommand {
     public static WaySavedData getWayData(ServerLevel world) {
         DimensionDataStorage manager = world.getDataStorage();
         return manager.computeIfAbsent(WaySavedData::fromNbt, WaySavedData::new, "way_saved_data");
+    }
+
+    @Override
+    protected void successMSG(CommandContext<CommandSourceStack> context, Collection<? extends Player> players) {
+        MutableComponent base = Component.translatable(LANG_PREFIX + getID(context, players.iterator().next()), getNewValue(context));
+        sendSuccess(context, base, players.iterator().next());
+    }
+
+    @Override
+    protected String getID(CommandContext<CommandSourceStack> context, Player player) {
+        return super.getID(context, player) + "." + this.namepainType;
     }
 
     @FunctionalInterface public interface getPersistantState {

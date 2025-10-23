@@ -6,24 +6,34 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.deadlydiamond98.way.common.command.commands.AbstractWayCommand;
 import net.deadlydiamond98.way.common.world.WaySavedData;
+import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 
+import java.util.Collection;
 import java.util.List;
 
 public class PersistantStateIntegerCommand extends AbstractWayCommand {
 
     private final getPersistantState getter;
     private final setPersistantState setter;
+    private final boolean sendPacket;
+    private final int min;
+    private final int max;
 
-    public PersistantStateIntegerCommand(String type, getPersistantState getter, setPersistantState setter) {
+    public PersistantStateIntegerCommand(String type, getPersistantState getter, setPersistantState setter, int min, int max, boolean sendPacket) {
         super(2, type);
         this.getter = getter;
         this.setter = setter;
+        this.min = min;
+        this.max = max;
+        this.sendPacket = sendPacket;
     }
 
     public int getValue(Player player) {
@@ -40,6 +50,9 @@ public class PersistantStateIntegerCommand extends AbstractWayCommand {
                     getWayData(serverPlayer.getServer().overworld()),
                     IntegerArgumentType.getInteger(context, type)
             );
+            if (serverPlayer instanceof IWayPlayer && this.sendPacket) {
+                player.getCommandSenderWorld().players().forEach(player1 -> ((IWayPlayer) player1).way$updateRenderPreferences());
+            }
         }
     }
 
@@ -50,7 +63,7 @@ public class PersistantStateIntegerCommand extends AbstractWayCommand {
 
     @Override
     protected List<ArgumentBuilder<CommandSourceStack, ?>> getExtraCommandParts() {
-        return List.of(Commands.argument(type, IntegerArgumentType.integer(1, 20)));
+        return List.of(Commands.argument(type, IntegerArgumentType.integer(this.min, this.max)));
     }
 
     @Override
@@ -61,6 +74,12 @@ public class PersistantStateIntegerCommand extends AbstractWayCommand {
     public static WaySavedData getWayData(ServerLevel world) {
         DimensionDataStorage manager = world.getDataStorage();
         return manager.computeIfAbsent(WaySavedData::fromNbt, WaySavedData::new, "way_saved_data");
+    }
+
+    @Override
+    protected void successMSG(CommandContext<CommandSourceStack> context, Collection<? extends Player> players) {
+        MutableComponent base = Component.translatable(LANG_PREFIX + getID(context, players.iterator().next()), getNewValue(context));
+        sendSuccess(context, base, players.iterator().next());
     }
 
     @FunctionalInterface public interface getPersistantState {

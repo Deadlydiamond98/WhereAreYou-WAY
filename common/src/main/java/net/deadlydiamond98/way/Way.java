@@ -9,6 +9,8 @@ public class Way {
     public static boolean namePainFlash = true;
     public static boolean namePainGetRedder = false;
     public static boolean colorDistance = false;
+    public static int minRender = 0;
+    public static int maxRender = 999999;
 
     public static final String MOD_ID = "way";
     public static final String MOD_NAME = "Where Are You (WAY)";

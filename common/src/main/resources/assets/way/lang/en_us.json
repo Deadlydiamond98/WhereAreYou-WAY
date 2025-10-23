@@ -24,6 +24,35 @@
   "commands.way.focus.reset": "Successfully reset %s's focus targets",
   "commands.way.focus.reset.multi": "Successfully reset the focus targets of %s players",
 
+  "commands.way.toggle": "Set %s's Keybind Toggling to %s",
+  "commands.way.hideIfVisible": "Set %s's Only Show Behind Blocks to %s",
+
+  "commands.way.see.color": "Set %s's ability to see color to %s",
+  "commands.way.see.distance": "Set %s's ability to see distance to %s",
+  "commands.way.see.head": "Set %s's ability to see head to %s",
+  "commands.way.see.headoutline": "Set %s's ability to see head outline to %s",
+  "commands.way.see.name": "Set %s's ability to see name to %s",
+  "commands.way.see.outline": "Set %s's ability to see outline to %s",
+  "commands.way.see.self": "Set %s's ability to see self to %s",
+
+  "commands.way.see.fail": "Server admins have disabled the ability to use this command",
+  "commands.way.see.fail.multi": "Server admins have disabled the ability to use this command",
+
+  "commands.way.colorDistance": "Set Color Distance to %s",
+  "commands.way.forceOpt-in": "Set Force Opt-In to %s",
+  "commands.way.namepain.nameFlashesWhenHurt": "Set Color flashes when hurt to %s",
+  "commands.way.namepain.nameColorGetsRedder": "Set Color gets redder with damage to %s",
+  "commands.way.seeAll": "Set See All Players to %s",
+  "commands.way.seeTeamColorOnly": "Set See Team Color Only to %s",
+  "commands.way.teamColorNoFriendlyFire": "Set No Friendly Fire to %s",
+
+  "commands.way.packetUpdateRate": "Set Packet Update Rate to %s",
+  "commands.way.disableIfFurtherThan": "Set the Max Nameplate view distance to %s",
+  "commands.way.disableIfWithin": "Set the Min Nameplate view distance to %s",
+
+  "commands.way.lock.color": "Locked Player Color Command: %s",
+  "commands.way.lock.see": "Locked Player See Command: %s",
+
   "commands.way.no_player": "Could not execute command, No valid player found!",
   "way.argument.dye.invalid": "Invalid Color: %s",
   "way.argument.hex.invalid": "Invalid Hex Color: %s"

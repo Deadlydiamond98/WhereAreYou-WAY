@@ -1,6 +1,5 @@
 package net.deadlydiamond98.way;
 
-import net.deadlydiamond98.way.client.WayForgeRenderType;
 import net.deadlydiamond98.way.client.WayKeybindings;
 import net.deadlydiamond98.way.client.renderer.WayNameplateRenderer;
 import net.minecraft.client.Minecraft;
@@ -21,7 +20,6 @@ public class WayClientForge {
             if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
                 return;
             }
-            WayForgeRenderType.register();
             WayNameplateRenderer.render(event.getPoseStack(), client.renderBuffers().bufferSource(), client.level, event.getPartialTick());
         }
 

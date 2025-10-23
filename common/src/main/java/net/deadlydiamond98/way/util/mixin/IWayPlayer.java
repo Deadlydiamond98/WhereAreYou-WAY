@@ -6,8 +6,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public interface IWayPlayer {
+
     void way$setToggle(boolean bool);
     boolean way$getToggle();
+
+    void way$setHideIfVisible(boolean bool);
+    boolean way$hideIfVisible();
 
     void way$setShowing(boolean show);
     boolean way$showPlayer();
@@ -47,9 +51,4 @@ public interface IWayPlayer {
 
     void way$setSeeSelf(boolean bool);
     boolean way$canSeeSelf();
-
-    void way$setMinRender(int min);
-    int way$getMinRender();
-    void way$setMaxRender(int max);
-    int way$getMaxRender();
 }

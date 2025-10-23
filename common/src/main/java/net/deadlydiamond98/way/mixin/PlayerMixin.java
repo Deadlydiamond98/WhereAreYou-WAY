@@ -28,6 +28,7 @@ public class PlayerMixin implements IWayPlayer {
     @Unique private Integer way$focusedColor = null;
 
     @Unique private boolean way$toggle = true;
+    @Unique private boolean way$hideIfVisible = false;
 
     @Unique private boolean way$seeNames = true;
     @Unique private boolean way$seeDist = true;
@@ -36,9 +37,6 @@ public class PlayerMixin implements IWayPlayer {
     @Unique private boolean way$seeHead = true;
     @Unique private boolean way$seeHeadOutline = true;
     @Unique private boolean way$seeSelf = false;
-
-    @Unique private int way$minRender = 0;
-    @Unique private int way$maxRender = 999999;
 
     @Inject(method = "attack", at = @At("HEAD"), cancellable = true)
     private void way$attack(Entity entity, CallbackInfo ci) {
@@ -56,6 +54,7 @@ public class PlayerMixin implements IWayPlayer {
         this.way$color = nbt.getInt("colorWAY");
         this.way$isClear = nbt.getBoolean("clearWay");
         this.way$toggle = nbt.getBoolean("toggleWay");
+        this.way$hideIfVisible = nbt.getBoolean("hideIfVisWay");
 
         this.way$seeNames = nbt.getBoolean("seeNameWay");
         this.way$seeDist = nbt.getBoolean("seeDistWay");
@@ -64,9 +63,6 @@ public class PlayerMixin implements IWayPlayer {
         this.way$seeSelf = nbt.getBoolean("seeSelfWay");
         this.way$seeHead = nbt.getBoolean("seeHeadWay");
         this.way$seeHeadOutline = nbt.getBoolean("seeHeadOutlineWay");
-
-        this.way$minRender = nbt.getInt("minRenderWay");
-        this.way$maxRender = nbt.getInt("maxRenderWay");
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
@@ -75,6 +71,7 @@ public class PlayerMixin implements IWayPlayer {
         nbt.putInt("colorWAY", way$color);
         nbt.putBoolean("clearWay", way$isClear);
         nbt.putBoolean("toggleWay", way$toggle);
+        nbt.putBoolean("hideIfVisWay", way$hideIfVisible);
 
         nbt.putBoolean("seeNameWay", way$seeNames);
         nbt.putBoolean("seeDistWay", way$seeDist);
@@ -83,9 +80,6 @@ public class PlayerMixin implements IWayPlayer {
         nbt.putBoolean("seeSelfWay", way$seeSelf);
         nbt.putBoolean("seeHeadWay", way$seeHead);
         nbt.putBoolean("seeHeadOutlineWay", way$seeHeadOutline);
-
-        nbt.putInt("minRenderWay", way$minRender);
-        nbt.putInt("maxRenderWay", way$maxRender);
     }
 
     @Override
@@ -97,6 +91,16 @@ public class PlayerMixin implements IWayPlayer {
     @Override
     public boolean way$getToggle() {
         return this.way$toggle;
+    }
+
+    @Override
+    public void way$setHideIfVisible(boolean bool) {
+        this.way$hideIfVisible = bool;
+    }
+
+    @Override
+    public boolean way$hideIfVisible() {
+        return this.way$hideIfVisible;
     }
 
     @Override
@@ -175,7 +179,9 @@ public class PlayerMixin implements IWayPlayer {
                     this.way$seeHeadOutline,
                     WayServerCommands.COLOR_DISTANCE.getValue(sender),
                     WayServerCommands.NAME_PAIN_FLASH.getValue(sender),
-                    WayServerCommands.NAME_PAIN_REDDER.getValue(sender)
+                    WayServerCommands.NAME_PAIN_REDDER.getValue(sender),
+                    WayServerCommands.MIN_DIST.getValue(sender),
+                    WayServerCommands.MAX_DIST.getValue(sender)
             );
         }
     }
@@ -255,27 +261,5 @@ public class PlayerMixin implements IWayPlayer {
     @Override
     public boolean way$canSeeSelf() {
         return this.way$seeSelf;
-    }
-
-    // Distance Command Methods ////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void way$setMinRender(int min) {
-        this.way$minRender = min;
-    }
-
-    @Override
-    public int way$getMinRender() {
-        return this.way$minRender;
-    }
-
-    @Override
-    public void way$setMaxRender(int max) {
-        this.way$maxRender = max;
-    }
-
-    @Override
-    public int way$getMaxRender() {
-        return this.way$maxRender;
     }
 }

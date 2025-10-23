@@ -2,9 +2,7 @@ package net.deadlydiamond98.way.common.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.deadlydiamond98.way.common.command.commands.*;
-import net.deadlydiamond98.way.common.command.commands.admin.NamePainCommand;
-import net.deadlydiamond98.way.common.command.commands.admin.PersistantStateBooleanCommand;
-import net.deadlydiamond98.way.common.command.commands.admin.PersistantStateIntegerCommand;
+import net.deadlydiamond98.way.common.command.commands.admin.*;
 import net.deadlydiamond98.way.common.command.commands.color.ClearColorCommand;
 import net.deadlydiamond98.way.common.command.commands.color.DyeColorCommmand;
 import net.deadlydiamond98.way.common.command.commands.color.HexColorCommand;
@@ -63,11 +61,7 @@ public class WayServerCommands {
             (player, bool) -> ((IWayPlayer) player).way$setSeeSelf(bool)
     );
 
-    // dist
-    private static final AbstractWayCommand MIN_DIST = new DistanceRenderCommand(0, "Within",
-            (player, i) -> ((IWayPlayer) player).way$setMinRender(i));
-    private static final AbstractWayCommand MAX_DIST = new DistanceRenderCommand(0, "FurtherThan",
-            (player, i) -> ((IWayPlayer) player).way$setMaxRender(i));
+    private static final AbstractWayCommand TOGGLE_RAYCAST = new OnlyShowBehindBlocksCommand(0);
 
     // ADMIN COMMANDS //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -105,32 +99,46 @@ public class WayServerCommands {
 
 
     // admin exclusive
-    public static final PersistantStateBooleanCommand COLOR_DISTANCE = new PersistantStateBooleanCommand("colourDistance",
-            WaySavedData::colorDistance, WaySavedData::setColorDistance
+    // bool
+    public static final PersistantStateBooleanCommand COLOR_DISTANCE = new PersistantStateBooleanCommand("colorDistance",
+            WaySavedData::colorDistance, WaySavedData::setColorDistance, true
     );
     public static final NamePainCommand NAME_PAIN_FLASH = new NamePainCommand("nameFlashesWhenHurt",
             WaySavedData::namePainFlash, WaySavedData::setNamePainFlash, true
     );
-    public static final NamePainCommand NAME_PAIN_REDDER = new NamePainCommand("nameColourGetsRedder",
+    public static final NamePainCommand NAME_PAIN_REDDER = new NamePainCommand("nameColorGetsRedder",
             WaySavedData::namePainGetRedder, WaySavedData::setNamePainGetRedder, true
     );
     public static final PersistantStateBooleanCommand FORCE_OPT = new PersistantStateBooleanCommand("forceOpt-in",
             WaySavedData::forceOptIn, WaySavedData::setForceOptIn
     );
-    public static final PersistantStateBooleanCommand LOCK_COLOR = new PersistantStateBooleanCommand("lockColour",
-            WaySavedData::lockColor, WaySavedData::setLockColor
-    );
-    public static final PersistantStateBooleanCommand SEE_TEAM_ONLY = new PersistantStateBooleanCommand("seeTeamColourOnly",
+    public static final PersistantStateBooleanCommand SEE_TEAM_ONLY = new PersistantStateBooleanCommand("seeTeamColorOnly",
             WaySavedData::seeTeamColorOnly, WaySavedData::setSeeTeamColorOnly
     );
     public static final PersistantStateBooleanCommand SEE_ALL = new PersistantStateBooleanCommand("seeAll",
             WaySavedData::seeAll, WaySavedData::setSeeAll
     );
-    public static final PersistantStateBooleanCommand NO_FRIENDLY_FIRE = new PersistantStateBooleanCommand("teamColourNoFriendlyFire",
+    public static final PersistantStateBooleanCommand NO_FRIENDLY_FIRE = new PersistantStateBooleanCommand("teamColorNoFriendlyFire",
             WaySavedData::teamColourNoFriendlyFire, WaySavedData::setTeamColourNoFriendlyFire
     );
+
+    // int
     public static final PersistantStateIntegerCommand PACKET_UPDATE_RATE = new PersistantStateIntegerCommand("packetUpdateRate",
-            WaySavedData::getPacketUpdateRate, WaySavedData::setPacketUpdateRate
+            WaySavedData::getPacketUpdateRate, WaySavedData::setPacketUpdateRate, 1, 20, false
+    );
+    public static final PersistantStateIntegerCommand MIN_DIST = new PersistantStateIntegerCommand("disableIfWithin",
+            WaySavedData::getMinRender, WaySavedData::setMinRender, 0, 999999, true
+    );
+    public static final PersistantStateIntegerCommand MAX_DIST = new PersistantStateIntegerCommand("disableIfFurtherThan",
+            WaySavedData::getMaxRender, WaySavedData::setMaxRender, 0, 999999, true
+    );
+
+    // admin exclusive lock
+    public static final LockCommand LOCK_COLOR = new LockCommand("color",
+            WaySavedData::colorLocked, WaySavedData::setColorLocked
+    );
+    public static final LockCommand LOCK_SEE = new LockCommand("see",
+            WaySavedData::seeLocked, WaySavedData::setSeeLocked
     );
 
 

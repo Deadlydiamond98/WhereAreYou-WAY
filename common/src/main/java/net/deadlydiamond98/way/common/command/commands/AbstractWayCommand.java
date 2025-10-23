@@ -31,7 +31,7 @@ public abstract class AbstractWayCommand {
     // Build and Register Command
 
     public final void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("way").requires(source -> source.hasPermission(this.permLvl)).then(buildCommandStart()));
+        dispatcher.register(Commands.literal("way").then(buildCommandStart().requires(source -> source.hasPermission(this.permLvl))));
     }
 
     private ArgumentBuilder<CommandSourceStack,?> buildCommandStart() {
@@ -117,7 +117,7 @@ public abstract class AbstractWayCommand {
 
     // Chat Message Results
 
-    private void successMSG(CommandContext<CommandSourceStack> context, Collection<? extends Player> players) {
+    protected void successMSG(CommandContext<CommandSourceStack> context, Collection<? extends Player> players) {
         boolean bl = players.size() > 1;
         MutableComponent base = Component.translatable(
                 LANG_PREFIX + getID(context, players.iterator().next()) + (bl ? ".multi" : ""),

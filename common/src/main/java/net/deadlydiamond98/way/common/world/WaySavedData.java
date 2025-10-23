@@ -5,11 +5,24 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 public class WaySavedData extends SavedData {
 
+    // Data Saved to overworld for variables that are global
+
+    // LOCK
+    private boolean lockColor = false;
+    private boolean lockSee = false;
+
+    // COLOR
     private boolean colorDistance = false;
     private boolean namePainFlash = true;
     private boolean namePainGetRedder = false;
+
+    // DISTANCE
+
+    private int minRender = 0;
+    private int maxRender = 999999;
+
+    // OTHER
     private boolean forceOptIn = false;
-    private boolean lockColor = false;
     private boolean seeTeamColorOnly = false;
     private boolean seeAll = false;
     private boolean teamColourNoFriendlyFire = false;
@@ -17,29 +30,41 @@ public class WaySavedData extends SavedData {
 
     @Override
     public CompoundTag save(CompoundTag nbt) {
+        nbt.putBoolean("lockColorWay", this.lockColor);
+        nbt.putBoolean("lockSeeWay", this.lockSee);
+
         nbt.putBoolean("colorDistanceWay", this.colorDistance);
         nbt.putBoolean("namePainFlashWay", this.namePainFlash);
         nbt.putBoolean("namePainGetRedder", this.namePainGetRedder);
+
         nbt.putBoolean("forceOptInWay", this.forceOptIn);
-        nbt.putBoolean("lockColorWay", this.lockColor);
         nbt.putBoolean("seeTeamColorOnlyWay", this.seeTeamColorOnly);
         nbt.putBoolean("seeAllWay", this.seeAll);
         nbt.putBoolean("teamColourNoFriendlyFireWay", this.teamColourNoFriendlyFire);
         nbt.putInt("packetUpdateRate", this.packetUpdateRate);
+        nbt.putInt("minRender", this.minRender);
+        nbt.putInt("maxRender", this.maxRender);
         return nbt;
     }
 
     public static WaySavedData fromNbt(CompoundTag nbt) {
         WaySavedData data = new WaySavedData();
+
+        data.lockColor = nbt.getBoolean("lockColorWay");
+        data.lockSee = nbt.getBoolean("lockSeeWay");
+
         data.colorDistance = nbt.getBoolean("colorDistanceWay");
         data.namePainFlash = nbt.getBoolean("namePainFlashWay");
         data.namePainGetRedder = nbt.getBoolean("namePainGetRedder");
+
         data.forceOptIn = nbt.getBoolean("forceOptInWay");
-        data.lockColor = nbt.getBoolean("lockColorWay");
         data.seeTeamColorOnly = nbt.getBoolean("seeTeamColorOnlyWay");
         data.seeAll = nbt.getBoolean("seeAllWay");
         data.teamColourNoFriendlyFire = nbt.getBoolean("teamColourNoFriendlyFireWay");
         data.packetUpdateRate = nbt.getInt("packetUpdateRate");
+
+        data.minRender = nbt.getInt("minRender");
+        data.maxRender = nbt.getInt("maxRender");
         return data;
     }
 
@@ -61,10 +86,6 @@ public class WaySavedData extends SavedData {
         return this.forceOptIn;
     }
 
-    public boolean lockColor() {
-        return this.lockColor;
-    }
-
     public boolean seeTeamColorOnly() {
         return this.seeTeamColorOnly;
     }
@@ -80,6 +101,10 @@ public class WaySavedData extends SavedData {
     public int getPacketUpdateRate() {
         return this.packetUpdateRate;
     }
+
+    public int getMinRender() {return this.minRender;}
+
+    public int getMaxRender() {return this.maxRender;}
 
     // SETTERS
 
@@ -103,11 +128,6 @@ public class WaySavedData extends SavedData {
         this.setDirty();
     }
 
-    public void setLockColor(boolean lockColor) {
-        this.lockColor = lockColor;
-        this.setDirty();
-    }
-
     public void setSeeTeamColorOnly(boolean seeTeamColorOnly) {
         this.seeTeamColorOnly = seeTeamColorOnly;
         this.setDirty();
@@ -125,6 +145,36 @@ public class WaySavedData extends SavedData {
 
     public void setPacketUpdateRate(int packetUpdateRate) {
         this.packetUpdateRate = packetUpdateRate;
+        this.setDirty();
+    }
+
+    public void setMinRender(int minRender) {
+        this.minRender = minRender;
+        this.setDirty();
+    }
+
+    public void setMaxRender(int maxRender) {
+        this.maxRender = maxRender;
+        this.setDirty();
+    }
+
+    // LOCKED GETTERS AND SETTERS
+
+    public boolean colorLocked() {
+        return this.lockColor;
+    }
+
+    public void setColorLocked(boolean lockColor) {
+        this.lockColor = lockColor;
+        this.setDirty();
+    }
+
+    public boolean seeLocked() {
+        return this.lockSee;
+    }
+
+    public void setSeeLocked(boolean lockSee) {
+        this.lockSee = lockSee;
         this.setDirty();
     }
 }

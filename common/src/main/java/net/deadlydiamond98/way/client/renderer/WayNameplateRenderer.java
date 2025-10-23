@@ -5,11 +5,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.deadlydiamond98.way.Way;
 import net.deadlydiamond98.way.client.WayKeybindings;
-import net.deadlydiamond98.way.client.WayRenderTypes;
 import net.deadlydiamond98.way.common.events.WayTickingEvent;
 import net.deadlydiamond98.way.util.ColorUtil;
 import net.deadlydiamond98.way.util.PlayerLocation;
 import net.deadlydiamond98.way.util.FaceRenderingUtil;
+import net.deadlydiamond98.way.util.mixin.IGlowingWayPlayer;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -21,6 +21,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +34,7 @@ public class WayNameplateRenderer {
 
     // Future me here, what form of crack was I on?!?!?!? This is now cleaned up
 
+    private static final ResourceLocation FIX_RENDERING_THING = new ResourceLocation(Way.MOD_ID, "textures/plz_work.png");
     private static final float[] UV = {0.125f, 0.25f};
     private static final int NAMETAG_RENDER_CUTTOFF = 100;
 
@@ -43,6 +45,11 @@ public class WayNameplateRenderer {
             LocalPlayer user = client.player;
 
             if (user instanceof IWayPlayer wayPlayer) {
+
+                level.players().forEach(player -> {
+                    ((IGlowingWayPlayer) player).way$setGlowRendering(false);
+                });
+
                 WayTickingEvent.PLAYER_POS.forEach(playerData -> {
                     if (playerData.getEyePosition().distanceTo(user.getEyePosition(renderTick)) > NAMETAG_RENDER_CUTTOFF) {
                         Vec3 pos = playerData.getPosition().add(0, playerData.nametagY, 0);
@@ -50,7 +57,6 @@ public class WayNameplateRenderer {
 
                     } else {
                         level.players().forEach(player -> {
-
                             boolean thirdPerson = user.equals(player) && !client.getEntityRenderDispatcher().camera.isDetached();
                             boolean invis = player.isDiscrete() || player.isInvisible();
                             boolean isSame = playerData.name.getString().equals(player.getName().getString());
@@ -58,7 +64,13 @@ public class WayNameplateRenderer {
                             if (isSame && !thirdPerson && !invis && player.distanceTo(user) <= NAMETAG_RENDER_CUTTOFF) {
                                 Vec3 pos = player.getPosition(renderTick).add(0, player.getNameTagOffsetY(), 0);
                                 renderNameplate(poseStack, bufferSource, level, renderTick, wayPlayer, playerData, pos, player);
-//                                ((IWayPlayer) player).way$setColor(playerData.hex);
+
+                                if (((IWayPlayer) user).way$canSeeOutline()) {
+                                    ((IGlowingWayPlayer) player).way$setOutlineColor(playerData.hex);
+                                    ((IGlowingWayPlayer) player).way$setGlowRendering(true);
+                                } else {
+                                    ((IGlowingWayPlayer) player).way$setGlowRendering(false);
+                                }
                             }
                         });
                     }
@@ -83,7 +95,7 @@ public class WayNameplateRenderer {
         }
 
         if (viewer.way$canSeeDist()) {
-            int distHex = viewer.way$canSeeColor() ? data.hex : 0x55FFFF;
+            int distHex = viewer.way$canSeeColor() ? getNameHex(data, viewer, distance, player) : 0x55FFFF;
             distHex = viewer.way$canSeeName() ? 0xFFFFFF : distHex;
 
             renderBackplate(poseStack, bufferSource, dist, viewer.way$canSeeName() ? -2.75f : -12, 0, distScale);
@@ -98,7 +110,8 @@ public class WayNameplateRenderer {
             if (viewer.way$canSeeName()) {
                 yOffset += 0.35f;
             }
-            renderPlayerIcon(poseStack, bufferSource, data.uuid, data.hex, yOffset, 0.45f, viewer);
+            int headHex = viewer.way$canSeeName() || viewer.way$canSeeDist() ? data.hex : getNameHex(data, viewer, distance, player);
+            renderPlayerIcon(poseStack, bufferSource, data.uuid, headHex, yOffset, 0.45f, viewer);
         }
 
         poseStack.popPose();
@@ -108,7 +121,7 @@ public class WayNameplateRenderer {
         int nameHex = viewer.way$canSeeColor() ? data.hex : 0xFFFFFFFF;
 
         if (Way.colorDistance) {
-            nameHex = ColorUtil.blendHexColors(nameHex, 0xFFFFFFFF, (distance - viewer.way$getMinRender()) / (float) Math.max(1, viewer.way$getMaxRender()));
+            nameHex = ColorUtil.blendHexColors(nameHex, 0xFFFFFFFF, (distance - Way.minRender) / (float) Math.max(1, Way.maxRender));
         }
 
         if (player != null && Way.namePainFlash) {
@@ -119,7 +132,7 @@ public class WayNameplateRenderer {
             nameHex = ColorUtil.blendHexColors(0xFFFF0000, nameHex, data.health / data.maxHealth);
         }
 
-        return nameHex  | 0xFF000000;
+        return nameHex | 0xFF000000;
     }
 
     private static void renderText(PoseStack poseStack, MultiBufferSource bufferSource, ClientLevel level, Component name, float x, float y, float z, float yOffset, float scale, int color) {
@@ -155,17 +168,20 @@ public class WayNameplateRenderer {
         float x = -0.5f;
         float bgWidthHeight = 1 + (sizeOffset * 2);
 
+        VertexConsumer vCon = bufferSource.getBuffer(RenderType.entityCutoutNoCull(FIX_RENDERING_THING));
+        renderBillboardingFace(poseStack, vCon, x - sizeOffset, y - sizeOffset, 0.002f, bgWidthHeight, bgWidthHeight, 0x03FFFFFF, scale);
+
         if (viewer.way$canSeeHeadOutline()) {
-            VertexConsumer vConBG = bufferSource.getBuffer(WayRenderTypes.getFullbrightNoDepthShape());
+            VertexConsumer vConBG = bufferSource.getBuffer(RenderType.textSeeThrough(FIX_RENDERING_THING));
             renderBillboardingFace(poseStack, vConBG, x - sizeOffset, y - sizeOffset, 0.001f, bgWidthHeight, bgWidthHeight, hex, scale);
         }
 
-        ClientPacketListener connection =  Minecraft.getInstance().getConnection();
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
 
         if (connection != null) {
             PlayerInfo info = connection.getPlayerInfo(uuid);
             if (info != null) {
-                VertexConsumer vConSkin = bufferSource.getBuffer(WayRenderTypes.getFullbrightNoDepth(info.getSkinLocation()));
+                VertexConsumer vConSkin = bufferSource.getBuffer(RenderType.textSeeThrough(info.getSkinLocation()));
                 renderBillboardingFace(poseStack, vConSkin, x, y, 0, 1, 1, 255, 255, 255, 255, scale);
             }
         }

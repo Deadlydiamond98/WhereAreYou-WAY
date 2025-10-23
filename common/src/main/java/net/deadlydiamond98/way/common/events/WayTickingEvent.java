@@ -47,38 +47,38 @@ public class WayTickingEvent {
         Integer focusColor = iWaySender.way$getFocusedColor();
 
         double distance = sender.position().distanceTo(player.position());
-        boolean inRange = distance >= iWaySender.way$getMinRender() && distance <= iWaySender.way$getMaxRender();
+        boolean inRange = distance >= WayServerCommands.MIN_DIST.getValue(sender) && distance <= WayServerCommands.MAX_DIST.getValue(sender);
 
         if ((sender == player && !iWaySender.way$canSeeSelf()) || (!inRange && sender != player)) {
             return false;
         }
 
         if (WayServerCommands.SEE_ALL.getValue(sender)) {
-            return canRender(sender, player, iWayPlayer.way$showPlayer());
+            return canRender(sender, player, iWaySender, iWayPlayer.way$showPlayer());
         }
 
         boolean focus = focusColor != null;
 
         if (WayServerCommands.SEE_TEAM_ONLY.getValue(sender)) {
             if (iWaySender.way$isClear() && iWayPlayer.way$isClear()) {
-                return canRender(sender, player, true);
+                return canRender(sender, player, iWaySender, true);
             }
-            return focus && focusColor == iWayPlayer.way$getColor();
+            return iWayPlayer.way$getColor() == iWaySender.way$getColor();
         } else if (focus) {
             if (iWaySender.way$isClear() && iWayPlayer.way$isClear()) {
-                return canRender(sender, player, true);
+                return canRender(sender, player, iWaySender, true);
             }
-            return canRender(sender, player, focusColor == iWayPlayer.way$getColor());
+            return canRender(sender, player, iWaySender, focusColor == iWayPlayer.way$getColor());
         }
         if (!targets.isEmpty()) {
-            return canRender(sender, player, targets.contains(player.getName()));
+            return canRender(sender, player, iWaySender, targets.contains(player.getName()));
         }
 
-        return canRender(sender, player, WayServerCommands.FORCE_OPT.getValue(sender) || iWayPlayer.way$showPlayer());
+        return canRender(sender, player, iWaySender, WayServerCommands.FORCE_OPT.getValue(sender) || iWayPlayer.way$showPlayer());
     }
 
-    private static boolean canRender(Player sender, Player player, boolean returnVal) {
-        if (sender.distanceTo(player) < 100 && (sender != player)) {
+    private static boolean canRender(Player sender, Player player, IWayPlayer iWaySender, boolean returnVal) {
+        if (sender.distanceTo(player) < 100 && (sender != player) && iWaySender.way$hideIfVisible()) {
             ClipContext context = new ClipContext(sender.getEyePosition(), player.getEyePosition(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player);
             BlockHitResult hitResult = sender.level().clip(context);
             if (hitResult.getType() == HitResult.Type.BLOCK) {

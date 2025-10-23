@@ -1,6 +1,5 @@
 package net.deadlydiamond98.way;
 
-import net.deadlydiamond98.way.client.WayFabricRenderType;
 import net.deadlydiamond98.way.client.WayKeybindings;
 import net.deadlydiamond98.way.client.renderer.WayNameplateRenderer;
 import net.deadlydiamond98.way.networking.WayFabricNetworking;
@@ -18,6 +17,5 @@ public class WayClientFabric implements ClientModInitializer {
         WorldRenderEvents.AFTER_ENTITIES.register(context -> {
             WayNameplateRenderer.render(context.matrixStack(), context.consumers(), context.world(), context.tickDelta());
         });
-        WayFabricRenderType.register();
     }
 }
