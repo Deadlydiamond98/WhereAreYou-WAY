@@ -19,7 +19,7 @@ public class WayFabric implements ModInitializer {
         Way.init();
         ServerTickEvents.END_SERVER_TICK.register(server -> server.getAllLevels().forEach(WayTickingEvent::tick));
         CommandRegistrationCallback.EVENT.register(WayServerCommands::register);
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> ((IWayPlayer) sender).way$updateRenderPreferences());
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> server.getAllLevels().forEach(level -> level.players().forEach(serverPlayer -> ((IWayPlayer) serverPlayer).way$updateRenderPreferences())));
         ServerPlayerEvents.AFTER_RESPAWN.register(WayRespawnEvent::respawn);
     }
 }
