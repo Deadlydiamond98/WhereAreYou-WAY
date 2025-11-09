@@ -1,5 +1,6 @@
 package net.deadlydiamond98.way.client.renderer;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -26,6 +27,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class WayNameplateRenderer {
@@ -39,6 +42,7 @@ public class WayNameplateRenderer {
     private static final int NAMETAG_RENDER_CUTTOFF = 100;
 
     public static void render(PoseStack poseStack, MultiBufferSource bufferSource, ClientLevel level, float renderTick) {
+
         if (WayKeybindings.renderNameOverlay()) {
 
             Minecraft client = Minecraft.getInstance();
@@ -46,11 +50,10 @@ public class WayNameplateRenderer {
 
             if (user instanceof IWayPlayer wayPlayer) {
 
-                level.players().forEach(player -> {
-                    ((IGlowingWayPlayer) player).way$setGlowRendering(false);
-                });
+                level.players().forEach(player -> ((IGlowingWayPlayer) player).way$setGlowRendering(false));
 
-                WayTickingEvent.PLAYER_POS.forEach(playerData -> {
+                // Done like this to prevent crash due to list being updating via a packet on fabric
+                new ArrayList<>(WayTickingEvent.PLAYER_POS).forEach(playerData -> {
                     if (playerData.getEyePosition().distanceTo(user.getEyePosition(renderTick)) > NAMETAG_RENDER_CUTTOFF) {
                         Vec3 pos = playerData.getPosition().add(0, playerData.nametagY, 0);
                         renderNameplate(poseStack, bufferSource, level, renderTick, wayPlayer, playerData, pos, null);
@@ -90,16 +93,29 @@ public class WayNameplateRenderer {
         float distScale = 0.25f * mainScale;
 
         if (viewer.way$canSeeName()) {
-            renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
-            renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, getNameHex(data, viewer, distance, player));
+
+            // This is to avoid an iris bug
+            if (Way.hasIris()) {
+                renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, getNameHex(data, viewer, distance, player));
+                renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
+            } else {
+                renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
+                renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, getNameHex(data, viewer, distance, player));
+            }
         }
 
         if (viewer.way$canSeeDist()) {
             int distHex = viewer.way$canSeeColor() ? getNameHex(data, viewer, distance, player) : 0x55FFFF;
             distHex = viewer.way$canSeeName() ? 0xFFFFFF : distHex;
 
-            renderBackplate(poseStack, bufferSource, dist, viewer.way$canSeeName() ? -2.75f : -12, 0, distScale);
-            renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY + (viewer.way$canSeeName() ? -7.5f : 2), distScale, distHex);
+            // This is to avoid an iris bug
+            if (Way.hasIris()) {
+                renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY + (viewer.way$canSeeName() ? -7.5f : 2), distScale, distHex);
+                renderBackplate(poseStack, bufferSource, dist, viewer.way$canSeeName() ? -2.75f : -12, 0, distScale);
+            } else {
+                renderBackplate(poseStack, bufferSource, dist, viewer.way$canSeeName() ? -2.75f : -12, 0, distScale);
+                renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY + (viewer.way$canSeeName() ? -7.5f : 2), distScale, distHex);
+            }
         }
 
         if (viewer.way$canSeeHead()) {
@@ -158,24 +174,40 @@ public class WayNameplateRenderer {
         float width = font.width(text) + 2;
         int rgb = 50;
         int alpha = 120;
-        VertexConsumer vConsumer = bufferSource.getBuffer(RenderType.debugQuads());
+        VertexConsumer vConsumer = bufferSource.getBuffer(RenderType.textBackground());
         renderBillboardingFace(poseStack, vConsumer, -width / 2.0f, y, z, width, font.lineHeight, alpha, rgb, rgb, rgb, scale);
     }
 
     private static void renderPlayerIcon(PoseStack poseStack, MultiBufferSource bufferSource, UUID uuid, int hex, float y, float scale, IWayPlayer viewer) {
-        float sizeOffset = 0.1f;
+        float sizeOffset = viewer.way$canSeeHeadOutline() ? 0.1f : 0;
 
         float x = -0.5f;
         float bgWidthHeight = 1 + (sizeOffset * 2);
 
-        VertexConsumer vCon = bufferSource.getBuffer(RenderType.entityCutoutNoCull(FIX_RENDERING_THING));
-        renderBillboardingFace(poseStack, vCon, x - sizeOffset, y - sizeOffset, 0.002f, bgWidthHeight, bgWidthHeight, 0x03FFFFFF, scale);
-
-        if (viewer.way$canSeeHeadOutline()) {
-            VertexConsumer vConBG = bufferSource.getBuffer(RenderType.textSeeThrough(FIX_RENDERING_THING));
-            renderBillboardingFace(poseStack, vConBG, x - sizeOffset, y - sizeOffset, 0.001f, bgWidthHeight, bgWidthHeight, hex, scale);
+        // This is to avoid an iris bug
+        if (Way.hasIris()) {
+            renderHeadOutline(poseStack, bufferSource, hex, x - sizeOffset, y - sizeOffset, bgWidthHeight, scale, viewer);
+            renderHead(poseStack, bufferSource, uuid, x, y, scale);
+        } else {
+            renderThingInBackToFixLayering(poseStack, bufferSource, x - sizeOffset, y - sizeOffset, bgWidthHeight, scale);
+            renderHeadOutline(poseStack, bufferSource, hex, x - sizeOffset, y - sizeOffset, bgWidthHeight, scale, viewer);
+            renderHead(poseStack, bufferSource, uuid, x, y, scale);
         }
+    }
 
+    private static void renderThingInBackToFixLayering(PoseStack poseStack, MultiBufferSource bufferSource, float x, float y, float wh, float scale) {
+        VertexConsumer vCon = bufferSource.getBuffer(RenderType.entityCutoutNoCull(FIX_RENDERING_THING));
+        renderBillboardingFace(poseStack, vCon, x , y, 0.002f, wh, wh, 0x03FFFFFF, scale);
+    }
+
+    private static void renderHeadOutline(PoseStack poseStack, MultiBufferSource bufferSource, int hex, float x, float y, float wh, float scale, IWayPlayer viewer) {
+        if (viewer.way$canSeeHeadOutline()) {
+            VertexConsumer vConBG = bufferSource.getBuffer(RenderType.textBackgroundSeeThrough());
+            renderBillboardingFace(poseStack, vConBG, x, y, 0.001f, wh, wh, hex, scale);
+        }
+    }
+
+    private static void renderHead(PoseStack poseStack, MultiBufferSource bufferSource, UUID uuid, float x, float y, float scale) {
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
 
         if (connection != null) {

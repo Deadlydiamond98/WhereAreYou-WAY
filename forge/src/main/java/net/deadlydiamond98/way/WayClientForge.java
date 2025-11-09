@@ -17,7 +17,7 @@ public class WayClientForge {
         @SubscribeEvent
         public static void renderNameplate(RenderLevelStageEvent event) {
             Minecraft client = Minecraft.getInstance();
-            if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
+            if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
                 return;
             }
             WayNameplateRenderer.render(event.getPoseStack(), client.renderBuffers().bufferSource(), client.level, event.getPartialTick());

@@ -1,6 +1,7 @@
 package net.deadlydiamond98.way;
 
 import net.deadlydiamond98.way.common.command.WayCommandArgTypes;
+import net.deadlydiamond98.way.platform.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +17,14 @@ public class Way {
     public static final String MOD_NAME = "Where Are You (WAY)";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
+    public static final boolean IRIS_FIX = true;
+
     public static void init() {
         WayCommandArgTypes.register();
         LOGGER.info("Finished Loading " + MOD_NAME);
+    }
+
+    public static boolean hasIris() {
+        return IRIS_FIX && (Service.PLATFORM.isModLoaded("iris") || Service.PLATFORM.isModLoaded("oculus"));
     }
 }
