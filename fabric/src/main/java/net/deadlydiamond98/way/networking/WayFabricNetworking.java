@@ -1,6 +1,7 @@
 package net.deadlydiamond98.way.networking;
 
 import net.deadlydiamond98.way.Way;
+import net.deadlydiamond98.way.common.command.WayServerCommands;
 import net.deadlydiamond98.way.common.events.WayTickingEvent;
 import net.deadlydiamond98.way.util.PlayerLocation;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
@@ -40,7 +41,8 @@ public class WayFabricNetworking {
                             buf.readDouble(),
                             buf.readUUID(),
                             buf.readBoolean(), buf.readInt(),
-                            buf.readInt(), buf.readFloat(), buf.readFloat()
+                            buf.readInt(), buf.readFloat(), buf.readFloat(),
+                            buf.readBoolean()
             ));
         }
 
@@ -62,6 +64,8 @@ public class WayFabricNetworking {
 
                 Way.minRender = buf.readInt();
                 Way.maxRender = buf.readInt();
+
+                player.way$setBypassOpt(buf.readBoolean());
             }
         }
     }
@@ -92,11 +96,13 @@ public class WayFabricNetworking {
             buf.writeFloat(player.getHealth());
             buf.writeFloat(player.getMaxHealth());
 
+            buf.writeBoolean(WayServerCommands.FORCE_OPT.getValue(sender) || ((IWayPlayer) player).way$showPlayer());
+
             ServerPlayNetworking.send(sender, UPDATE_PLAYER_PACKET, buf);
         }
 
         public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean head, boolean headOutline,
-                                            boolean colordistance, boolean namePainFlash, boolean namePainGetRedder, int minRender, int maxRender) {
+                                            boolean colordistance, boolean namePainFlash, boolean namePainGetRedder, int minRender, int maxRender, boolean bypassOpt) {
             FriendlyByteBuf buf = PacketByteBufs.create();
 
             buf.writeBoolean(toggle);
@@ -115,6 +121,8 @@ public class WayFabricNetworking {
 
             buf.writeInt(minRender);
             buf.writeInt(maxRender);
+
+            buf.writeBoolean(bypassOpt);
 
             ServerPlayNetworking.send(sender, UPDATE_NAMEPLATE_RENDER_PACKET, buf);
         }

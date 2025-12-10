@@ -1,16 +1,15 @@
 package net.deadlydiamond98.way.common.events;
 
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public class WayRespawnEvent {
-
     public static void respawn(Player oldPlayer, Player newPlayer, boolean alive) {
         IWayPlayer oldWay = (IWayPlayer) oldPlayer;
         IWayPlayer newWay = (IWayPlayer) newPlayer;
 
         newWay.way$setShowing(oldWay.way$showPlayer());
+        newWay.way$setBypassOpt(oldWay.way$bypassOpt());
         newWay.way$setColor(oldWay.way$getColor());
         newWay.way$setToggle(oldWay.way$getToggle());
 

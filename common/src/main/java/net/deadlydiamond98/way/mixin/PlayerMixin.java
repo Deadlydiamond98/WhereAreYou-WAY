@@ -22,6 +22,7 @@ import java.util.List;
 public class PlayerMixin implements IWayPlayer {
 
     @Unique private boolean way$showPlayer = true;
+    @Unique private boolean way$bypassOpt = false;
     @Unique private int way$color = 0xFFFFFF;
     @Unique private boolean way$isClear = true;
     @Unique private List<Component> way$players = new ArrayList<>();
@@ -51,6 +52,7 @@ public class PlayerMixin implements IWayPlayer {
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void way$readAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
         this.way$showPlayer = nbt.getBoolean("showPlayerWAY");
+        this.way$bypassOpt = nbt.getBoolean("bypassShowPlayerWAY");
         this.way$color = nbt.getInt("colorWAY");
         this.way$isClear = nbt.getBoolean("clearWay");
         this.way$toggle = nbt.getBoolean("toggleWay");
@@ -68,6 +70,7 @@ public class PlayerMixin implements IWayPlayer {
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void way$addAdditionalSaveData(CompoundTag nbt, CallbackInfo ci) {
         nbt.putBoolean("showPlayerWAY", way$showPlayer);
+        nbt.putBoolean("bypassShowPlayerWAY", way$bypassOpt);
         nbt.putInt("colorWAY", way$color);
         nbt.putBoolean("clearWay", way$isClear);
         nbt.putBoolean("toggleWay", way$toggle);
@@ -111,6 +114,16 @@ public class PlayerMixin implements IWayPlayer {
     @Override
     public boolean way$showPlayer() {
         return this.way$showPlayer;
+    }
+
+    @Override
+    public void way$setBypassOpt(boolean bool) {
+        this.way$bypassOpt = bool;
+    }
+
+    @Override
+    public boolean way$bypassOpt() {
+        return this.way$bypassOpt;
     }
 
     @Override
@@ -181,7 +194,8 @@ public class PlayerMixin implements IWayPlayer {
                     WayServerCommands.NAME_PAIN_FLASH.getValue(sender),
                     WayServerCommands.NAME_PAIN_REDDER.getValue(sender),
                     WayServerCommands.MIN_DIST.getValue(sender),
-                    WayServerCommands.MAX_DIST.getValue(sender)
+                    WayServerCommands.MAX_DIST.getValue(sender),
+                    this.way$bypassOpt
             );
         }
     }

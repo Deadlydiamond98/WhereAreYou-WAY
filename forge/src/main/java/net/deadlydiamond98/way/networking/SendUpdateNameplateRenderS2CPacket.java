@@ -49,6 +49,8 @@ public class SendUpdateNameplateRenderS2CPacket {
 
                     Way.minRender = buf.readInt();
                     Way.maxRender = buf.readInt();
+
+                    player.way$setBypassOpt(buf.readBoolean());
                 }
             }
         });

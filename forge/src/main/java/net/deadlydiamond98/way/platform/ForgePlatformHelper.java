@@ -1,32 +1,17 @@
 package net.deadlydiamond98.way.platform;
 
 import com.mojang.brigadier.arguments.ArgumentType;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.deadlydiamond98.way.Way;
 import net.deadlydiamond98.way.networking.WayForgeNetworking;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class ForgePlatformHelper implements PlatformHelper {
 
@@ -53,9 +38,9 @@ public class ForgePlatformHelper implements PlatformHelper {
 
     @Override
     public void sendS2CRenderingPacket(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean head, boolean headOutline,
-                                       boolean colordistance, boolean namePainFlash, boolean namePainGetRedder, int minRender, int maxRender) {
+                                       boolean colordistance, boolean namePainFlash, boolean namePainGetRedder, int minRender, int maxRender, boolean bypassOpt) {
         WayForgeNetworking.sendRenderValues(sender, toggle, names, distance, colors, outlines, head, headOutline,
-                colordistance, namePainFlash, namePainGetRedder, minRender, maxRender);
+                colordistance, namePainFlash, namePainGetRedder, minRender, maxRender, bypassOpt);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

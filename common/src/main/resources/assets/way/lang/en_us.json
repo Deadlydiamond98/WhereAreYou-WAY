@@ -6,6 +6,9 @@
   "commands.way.opt": "Successfully set %s's visibility to %s",
   "commands.way.opt.multi": "Successfully set the visibility of %s players to %s",
 
+  "commands.way.seeAll": "Set %s's ability to see hidden Players to %s",
+  "commands.way.seeAll.multi": "Set the ability for %s players to see hidden Players to %s",
+
   "commands.way.color": "Successfully set %s's color to %s",
   "commands.way.color.multi": "Successfully set the color of %s players to %s",
 
@@ -42,13 +45,14 @@
   "commands.way.forceOpt-in": "Set Force Opt-In to %s",
   "commands.way.namepain.nameFlashesWhenHurt": "Set Color flashes when hurt to %s",
   "commands.way.namepain.nameColorGetsRedder": "Set Color gets redder with damage to %s",
-  "commands.way.seeAll": "Set See All Players to %s",
   "commands.way.seeTeamColorOnly": "Set See Team Color Only to %s",
   "commands.way.teamColorNoFriendlyFire": "Set No Friendly Fire to %s",
 
   "commands.way.packetUpdateRate": "Set Packet Update Rate to %s",
   "commands.way.disableIfFurtherThan": "Set the Max Nameplate view distance to %s",
   "commands.way.disableIfWithin": "Set the Min Nameplate view distance to %s",
+  "commands.way.disableIfFurtherThan.show": "The Max Nameplate view distance is currently %s",
+  "commands.way.disableIfWithin.show": "The Min Nameplate view distance is currently %s",
 
   "commands.way.lock.color": "Locked Player Color Command: %s",
   "commands.way.lock.see": "Locked Player See Command: %s",

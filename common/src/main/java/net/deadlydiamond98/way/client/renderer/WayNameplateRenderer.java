@@ -28,7 +28,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class WayNameplateRenderer {
@@ -64,7 +63,7 @@ public class WayNameplateRenderer {
                             boolean invis = player.isDiscrete() || player.isInvisible();
                             boolean isSame = playerData.name.getString().equals(player.getName().getString());
 
-                            if (isSame && !thirdPerson && !invis && player.distanceTo(user) <= NAMETAG_RENDER_CUTTOFF) {
+                            if (isSame && !thirdPerson && (!invis || wayPlayer.way$bypassOpt()) && player.distanceTo(user) <= NAMETAG_RENDER_CUTTOFF) {
                                 Vec3 pos = player.getPosition(renderTick).add(0, player.getNameTagOffsetY(), 0);
                                 renderNameplate(poseStack, bufferSource, level, renderTick, wayPlayer, playerData, pos, player);
 
@@ -83,54 +82,56 @@ public class WayNameplateRenderer {
     }
     
     private static void renderNameplate(PoseStack poseStack, MultiBufferSource bufferSource, ClientLevel level, float renderTick, IWayPlayer viewer, PlayerLocation data, Vec3 pos, @Nullable Player player) {
-        poseStack.pushPose();
+        if (data.isOptedIn || viewer.way$bypassOpt()) {
+            poseStack.pushPose();
 
-        int distance = getDistance(poseStack, renderTick, pos);
-        Component dist = Component.translatable("gui.way.distance", distance);
+            int distance = getDistance(poseStack, renderTick, pos);
+            Component dist = Component.translatable("gui.way.distance", distance);
 
-        float mainScale = 0.0625f;
-        float nameScale = 0.5f * mainScale;
-        float distScale = 0.25f * mainScale;
+            float mainScale = 0.0625f;
+            float nameScale = 0.5f * mainScale;
+            float distScale = 0.25f * mainScale;
 
-        if (viewer.way$canSeeName()) {
-
-            // This is to avoid an iris bug
-            if (Way.hasIris()) {
-                renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, getNameHex(data, viewer, distance, player));
-                renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
-            } else {
-                renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
-                renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, getNameHex(data, viewer, distance, player));
-            }
-        }
-
-        if (viewer.way$canSeeDist()) {
-            int distHex = viewer.way$canSeeColor() ? getNameHex(data, viewer, distance, player) : 0x55FFFF;
-            distHex = viewer.way$canSeeName() ? 0xFFFFFF : distHex;
-
-            // This is to avoid an iris bug
-            if (Way.hasIris()) {
-                renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY + (viewer.way$canSeeName() ? -7.5f : 2), distScale, distHex);
-                renderBackplate(poseStack, bufferSource, dist, viewer.way$canSeeName() ? -2.75f : -12, 0, distScale);
-            } else {
-                renderBackplate(poseStack, bufferSource, dist, viewer.way$canSeeName() ? -2.75f : -12, 0, distScale);
-                renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY + (viewer.way$canSeeName() ? -7.5f : 2), distScale, distHex);
-            }
-        }
-
-        if (viewer.way$canSeeHead()) {
-            float yOffset = -0.2f;
-            if (viewer.way$canSeeDist()) {
-                yOffset += 0.25f;
-            }
             if (viewer.way$canSeeName()) {
-                yOffset += 0.35f;
-            }
-            int headHex = viewer.way$canSeeName() || viewer.way$canSeeDist() ? data.hex : getNameHex(data, viewer, distance, player);
-            renderPlayerIcon(poseStack, bufferSource, data.uuid, headHex, yOffset, 0.45f, viewer);
-        }
 
-        poseStack.popPose();
+                // This is to avoid an iris bug
+                if (Way.hasIris()) {
+                    renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, getNameHex(data, viewer, distance, player));
+                    renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
+                } else {
+                    renderBackplate(poseStack, bufferSource, data.name, -10.5f, 0, nameScale);
+                    renderText(poseStack, bufferSource, level, data.name, 0, 0, 0, data.nametagY, nameScale, getNameHex(data, viewer, distance, player));
+                }
+            }
+
+            if (viewer.way$canSeeDist()) {
+                int distHex = viewer.way$canSeeColor() ? getNameHex(data, viewer, distance, player) : 0x55FFFF;
+                distHex = viewer.way$canSeeName() ? 0xFFFFFF : distHex;
+
+                // This is to avoid an iris bug
+                if (Way.hasIris()) {
+                    renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY + (viewer.way$canSeeName() ? -7.5f : 2), distScale, distHex);
+                    renderBackplate(poseStack, bufferSource, dist, viewer.way$canSeeName() ? -2.75f : -12, 0, distScale);
+                } else {
+                    renderBackplate(poseStack, bufferSource, dist, viewer.way$canSeeName() ? -2.75f : -12, 0, distScale);
+                    renderText(poseStack, bufferSource, level, dist, 0, 0, 0, data.nametagY + (viewer.way$canSeeName() ? -7.5f : 2), distScale, distHex);
+                }
+            }
+
+            if (viewer.way$canSeeHead()) {
+                float yOffset = -0.2f;
+                if (viewer.way$canSeeDist()) {
+                    yOffset += 0.25f;
+                }
+                if (viewer.way$canSeeName()) {
+                    yOffset += 0.35f;
+                }
+                int headHex = viewer.way$canSeeName() || viewer.way$canSeeDist() ? data.hex : getNameHex(data, viewer, distance, player);
+                renderPlayerIcon(poseStack, bufferSource, data.uuid, headHex, yOffset, 0.45f, viewer);
+            }
+
+            poseStack.popPose();
+        }
     }
 
     private static int getNameHex(PlayerLocation data, IWayPlayer viewer, int distance, @Nullable Player player) {
@@ -188,6 +189,7 @@ public class WayNameplateRenderer {
         if (Way.hasIris()) {
             renderHeadOutline(poseStack, bufferSource, hex, x - sizeOffset, y - sizeOffset, bgWidthHeight, scale, viewer);
             renderHead(poseStack, bufferSource, uuid, x, y, scale);
+            renderThingInBackToFixLayering(poseStack, bufferSource, x - sizeOffset, y - sizeOffset, bgWidthHeight, scale);
         } else {
             renderThingInBackToFixLayering(poseStack, bufferSource, x - sizeOffset, y - sizeOffset, bgWidthHeight, scale);
             renderHeadOutline(poseStack, bufferSource, hex, x - sizeOffset, y - sizeOffset, bgWidthHeight, scale, viewer);

@@ -16,6 +16,9 @@ public interface IWayPlayer {
     void way$setShowing(boolean show);
     boolean way$showPlayer();
 
+    void way$setBypassOpt(boolean bool);
+    boolean way$bypassOpt();
+
     void way$setColor(int hex);
     int way$getColor();
 

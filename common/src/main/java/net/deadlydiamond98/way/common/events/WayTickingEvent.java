@@ -53,10 +53,6 @@ public class WayTickingEvent {
             return false;
         }
 
-        if (WayServerCommands.SEE_ALL.getValue(sender)) {
-            return canRender(sender, player, iWaySender, iWayPlayer.way$showPlayer());
-        }
-
         boolean focus = focusColor != null;
 
         if (WayServerCommands.SEE_TEAM_ONLY.getValue(sender)) {
@@ -74,7 +70,7 @@ public class WayTickingEvent {
             return canRender(sender, player, iWaySender, targets.contains(player.getName()));
         }
 
-        return canRender(sender, player, iWaySender, WayServerCommands.FORCE_OPT.getValue(sender) || iWayPlayer.way$showPlayer());
+        return canRender(sender, player, iWaySender, true);
     }
 
     private static boolean canRender(Player sender, Player player, IWayPlayer iWaySender, boolean returnVal) {

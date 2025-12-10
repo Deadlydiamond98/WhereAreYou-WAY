@@ -40,12 +40,17 @@ public abstract class AbstractWayCommand {
         if (isOP()) {
             commandParts.add(Commands.literal("admin"));
             if (multiTarget()) {
-                commandParts.add(getPrePlayerArg());
+                if (useModifyPrefix()) {
+                    commandParts.add(getPrePlayerArg());
+                }
                 commandParts.add(Commands.argument("players", EntityArgument.players()));
             }
         }
 
-        commandParts.add(Commands.literal(this.type));
+        if (useRegularPrefixAfterPlayers()) {
+            commandParts.add(Commands.literal(this.type));
+        }
+
         commandParts.addAll(getExtraCommandParts());
 
         int last = commandParts.size() - 1;
@@ -113,6 +118,14 @@ public abstract class AbstractWayCommand {
 
     protected boolean multiTarget() {
         return isOP();
+    }
+
+    protected boolean useRegularPrefixAfterPlayers() {
+        return true;
+    }
+
+    protected boolean useModifyPrefix() {
+        return true;
     }
 
     // Chat Message Results

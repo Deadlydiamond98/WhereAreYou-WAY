@@ -99,7 +99,10 @@ public class WayServerCommands {
 
 
     // admin exclusive
+
     // bool
+    public static final AbstractWayCommand SEE_ALL = new SeeAllCommand();
+
     public static final PersistantStateBooleanCommand COLOR_DISTANCE = new PersistantStateBooleanCommand("colorDistance",
             WaySavedData::colorDistance, WaySavedData::setColorDistance, true
     );
@@ -115,9 +118,7 @@ public class WayServerCommands {
     public static final PersistantStateBooleanCommand SEE_TEAM_ONLY = new PersistantStateBooleanCommand("seeTeamColorOnly",
             WaySavedData::seeTeamColorOnly, WaySavedData::setSeeTeamColorOnly
     );
-    public static final PersistantStateBooleanCommand SEE_ALL = new PersistantStateBooleanCommand("seeAll",
-            WaySavedData::seeAll, WaySavedData::setSeeAll
-    );
+
     public static final PersistantStateBooleanCommand NO_FRIENDLY_FIRE = new PersistantStateBooleanCommand("teamColorNoFriendlyFire",
             WaySavedData::teamColourNoFriendlyFire, WaySavedData::setTeamColourNoFriendlyFire
     );
@@ -131,6 +132,13 @@ public class WayServerCommands {
     );
     public static final PersistantStateIntegerCommand MAX_DIST = new PersistantStateIntegerCommand("disableIfFurtherThan",
             WaySavedData::getMaxRender, WaySavedData::setMaxRender, 0, 999999, true
+    );
+
+    public static final ShowDistCommand SHOW_MIN_DIST = new ShowDistCommand("disableIfWithin",
+            WaySavedData::getMinRender, WaySavedData::setMinRender
+    );
+    public static final ShowDistCommand SHOW_MAX_DIST = new ShowDistCommand("disableIfFurtherThan",
+            WaySavedData::getMaxRender, WaySavedData::setMaxRender
     );
 
     // admin exclusive lock

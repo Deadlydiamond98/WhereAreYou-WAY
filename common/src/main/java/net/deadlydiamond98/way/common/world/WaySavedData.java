@@ -24,7 +24,6 @@ public class WaySavedData extends SavedData {
     // OTHER
     private boolean forceOptIn = false;
     private boolean seeTeamColorOnly = false;
-    private boolean seeAll = false;
     private boolean teamColourNoFriendlyFire = false;
     private int packetUpdateRate = 5;
 
@@ -39,7 +38,6 @@ public class WaySavedData extends SavedData {
 
         nbt.putBoolean("forceOptInWay", this.forceOptIn);
         nbt.putBoolean("seeTeamColorOnlyWay", this.seeTeamColorOnly);
-        nbt.putBoolean("seeAllWay", this.seeAll);
         nbt.putBoolean("teamColourNoFriendlyFireWay", this.teamColourNoFriendlyFire);
         nbt.putInt("packetUpdateRate", this.packetUpdateRate);
         nbt.putInt("minRender", this.minRender);
@@ -59,7 +57,6 @@ public class WaySavedData extends SavedData {
 
         data.forceOptIn = nbt.getBoolean("forceOptInWay");
         data.seeTeamColorOnly = nbt.getBoolean("seeTeamColorOnlyWay");
-        data.seeAll = nbt.getBoolean("seeAllWay");
         data.teamColourNoFriendlyFire = nbt.getBoolean("teamColourNoFriendlyFireWay");
         data.packetUpdateRate = nbt.getInt("packetUpdateRate");
 
@@ -88,10 +85,6 @@ public class WaySavedData extends SavedData {
 
     public boolean seeTeamColorOnly() {
         return this.seeTeamColorOnly;
-    }
-
-    public boolean seeAll() {
-        return this.seeAll;
     }
 
     public boolean teamColourNoFriendlyFire() {
@@ -130,11 +123,6 @@ public class WaySavedData extends SavedData {
 
     public void setSeeTeamColorOnly(boolean seeTeamColorOnly) {
         this.seeTeamColorOnly = seeTeamColorOnly;
-        this.setDirty();
-    }
-
-    public void setSeeAll(boolean seeAll) {
-        this.seeAll = seeAll;
         this.setDirty();
     }
 

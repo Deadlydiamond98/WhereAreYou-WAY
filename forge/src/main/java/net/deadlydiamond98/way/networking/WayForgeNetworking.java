@@ -2,6 +2,7 @@ package net.deadlydiamond98.way.networking;
 
 import io.netty.buffer.Unpooled;
 import net.deadlydiamond98.way.Way;
+import net.deadlydiamond98.way.common.command.WayServerCommands;
 import net.deadlydiamond98.way.util.mixin.IWayPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -71,11 +72,13 @@ public class WayForgeNetworking {
         buf.writeFloat(player.getHealth());
         buf.writeFloat(player.getMaxHealth());
 
+        buf.writeBoolean(WayServerCommands.FORCE_OPT.getValue(sender) || ((IWayPlayer) player).way$showPlayer());
+
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> sender), new SendUpdatePlayerS2CPacket(buf));
     }
 
     public static void sendRenderValues(ServerPlayer sender, boolean toggle, boolean names, boolean distance, boolean colors, boolean outlines, boolean head, boolean headOutline,
-                                        boolean colordistance, boolean namePainFlash, boolean namePainGetRedder, int minRender, int maxRender) {
+                                        boolean colordistance, boolean namePainFlash, boolean namePainGetRedder, int minRender, int maxRender, boolean bypassOpt) {
         FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
 
         buf.writeBoolean(toggle);
@@ -93,6 +96,8 @@ public class WayForgeNetworking {
 
         buf.writeInt(minRender);
         buf.writeInt(maxRender);
+
+        buf.writeBoolean(bypassOpt);
 
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> sender), new SendUpdateNameplateRenderS2CPacket(buf));
     }
